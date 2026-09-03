@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#05050f">
+  <title>ورود — TiTaN</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/emblem.svg">
+  <link rel="stylesheet" href="/static/css/fonts.css">
+  <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+
+  <!-- ambient background -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="grid-floor"></div>
+    <div class="particles" id="particles"></div>
+  </div>
+
+  <main class="login-layout">
+
+    <!-- left: login card -->
+    <section class="login-panel" aria-label="فرم ورود به پنل TiTaN">
+      <div class="card">
+
+        <div class="panel-emblem" aria-hidden="true">
+          <img src="/static/img/emblem.svg" alt="">
+        </div>
+
+        <header class="card-head">
+          <img class="emblem" src="/static/img/emblem.svg" alt="نشان TiTaN" width="58" height="58">
+          <h1 class="brand">TiTaN</h1>
+        </header>
+
+        <h2 class="welcome">به TiTaN خوش آمدید</h2>
+        <p class="welcome-sub">برای ورود به پنل، نام کاربری خود را وارد کنید</p>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label class="field-label" for="username">نام کاربری</label>
+            <div class="input-shell">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>
+                </svg>
+              </span>
+              <input class="input" id="username" name="username" type="text"
+                     placeholder="نام کاربری خود را وارد کنید"
+                     autocomplete="username" autocapitalize="none" spellcheck="false" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="password">رمز عبور</label>
+            <div class="input-shell">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+                </svg>
+              </span>
+              <input class="input has-toggle" id="password" name="password" type="password"
+                     placeholder="رمز عبور خود را وارد کنید"
+                     autocomplete="current-password" required>
+              <button type="button" class="toggle-pass" id="togglePass"
+                      aria-label="نمایش رمز عبور" aria-pressed="false">
+                <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" hidden>
+                  <path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3 3.8"/><path d="M6.6 6.6A18 18 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4-1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="row-options">
+            <a href="#" class="forgot" id="forgotLink">فراموشی رمز عبور</a>
+            <label class="remember">
+              <input type="checkbox" id="remember" name="remember">
+              <span class="checkbox" aria-hidden="true"></span>
+              <span class="remember-text">مرا به خاطر بسپار</span>
+            </label>
+          </div>
+
+          <div class="form-error" id="formError" role="alert" aria-live="polite"></div>
+
+          <button class="btn-login" id="loginBtn" type="submit">
+            <span class="btn-label">ورود</span>
+            <span class="btn-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <section class="quick" aria-label="دسترسی سریع">
+          <p class="quick-title">دسترسی سریع</p>
+          <div class="quick-cards">
+            <a class="quick-card" href="#" data-action="telegram">
+              <span class="quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.6 2.9 11.7c-1 .4-1 1.3 0 1.6l4.9 1.5 1.9 5.8c.3.9 1.2.9 1.6.2l2.7-4.4 5 3.6c.6.5 1.4.2 1.6-.5l2.9-13.5c.3-1-.6-1.6-1.3-1.3z"/></svg>
+              </span>
+              <span class="quick-meta">
+                <span class="quick-name">چنل تلگرام</span>
+                <span class="quick-sub">به کانال رسمی ما بپیوندید</span>
+              </span>
+            </a>
+            <a class="quick-card" href="#" data-action="support">
+              <span class="quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M20 20a4 4 0 0 1-4 3h-3"/>
+                </svg>
+              </span>
+              <span class="quick-meta">
+                <span class="quick-name">پشتیبانی</span>
+                <span class="quick-sub">با تیم پشتیبانی در ارتباط باشید</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <footer class="card-footer">TiTaN © 2024 | تمامی حقوق محفوظ است</footer>
+
+      </div>
+    </section>
+
+    <!-- right: TiTaN 3D emblem -->
+    <section class="visual" aria-hidden="true">
+      <div class="halo"></div>
+      <div class="cube-float">
+        <div class="cube-stage">
+          <div class="cube-spin">
+            <div class="cube">
+              <span class="face face-front"></span>
+              <span class="face face-back"></span>
+              <span class="face face-right"></span>
+              <span class="face face-left"></span>
+              <span class="face face-top"></span>
+              <span class="face face-bottom"></span>
+              <span class="cube-core"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="platform"></div>
+      <div class="cube-reflection"></div>
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/static/js/login.js"></script>
+</body>
+</html>

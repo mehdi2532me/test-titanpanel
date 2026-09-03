@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06060d">
+  <title>TiTaN — داشبورد</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/emblem.svg">
+  <link rel="stylesheet" href="/static/css/fonts.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <img src="/static/img/emblem.svg" alt="TiTaN">
+        <div class="brand-text">
+          <span class="brand-name">TiTaN</span>
+          <span class="brand-sub">v{{ app_version }}</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav" aria-label="Navigation"></nav>
+      <div class="sidebar-foot" id="sidebarFoot"></div>
+    </aside>
+
+    <div class="scrim" id="scrim"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+        <button class="icon-btn hide-sm" id="collapseBtn" aria-label="Collapse" title="Collapse">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <div class="topbar-search">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" id="globalSearch" placeholder="جستجو..." aria-label="Search">
+          <span class="kbd">Ctrl K</span>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn" id="bellBtn" aria-label="Notifications" title="Notifications">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="dot count" id="bellDot" style="display:none">0</span>
+          </button>
+          <button class="icon-btn" id="statusBtn" aria-label="System status" title="System">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </button>
+          <button class="icon-btn hide-sm" aria-label="Messages" title="Messages">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+          <div class="admin-chip">
+            <div class="avatar" id="adminAvatar">A<span class="status-dot"></span></div>
+            <div class="admin-meta">
+              <span class="admin-name" id="adminName">مدیر</span>
+              <span class="admin-role" id="adminRole">ادمین کل</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="view"></main>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <script src="/static/js/i18n.js"></script>
+  <script src="/static/js/ui.js"></script>
+  <script src="/static/js/pages.js"></script>
+  <script>
+    (async function init() {
+      try {
+        const me = await UI.apiJson('/api/me');
+        if (!me || !me.logged_in) { location.href = '/login'; return; }
+        // theme from settings
+        const theme = (me.settings && me.settings.theme) || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        // admin name
+        UI.boot();
+        // initial header badge
+        UI.apiJson('/api/stats').then(s => {
+          const b = document.getElementById('bellDot');
+          if (b) {
+            b.textContent = s.events_today || 0;
+            b.style.display = (s.events_today || 0) > 0 ? 'flex' : 'none';
+          }
+        }).catch(() => {});
+      } catch (e) { location.href = '/login'; }
+    })();
+  </script>
+</body>
+</html>
