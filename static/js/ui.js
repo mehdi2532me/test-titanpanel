@@ -47,6 +47,8 @@ window.UI = (() => {
     wrench: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     server: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01M6 17h.01"/></svg>',
     key: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.8 7.8 5.5 5.5 0 0 1 7.8-7.8zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+    statConfigs: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2"/><path d="M15 4V2"/><path d="M8 10H16"/><path d="M9 15L11 17L15 13"/></svg>',
+    statTraffic: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="7" height="14" rx="2"/><rect x="13" y="5" width="7" height="14" rx="2"/><path d="M7 9H17"/><path d="M7 15H17"/></svg>',
   };
 
   // ---------------- API ----------------
@@ -190,7 +192,7 @@ window.UI = (() => {
 
   // ---------------- chart ----------------
   function drawChart(container, data, opts = {}) {
-    // data: [{t, up, down}]; opts.colors {up, down}, opts.labels bool
+    // data: [{t, up, down}]; opts.colors {up, down}, opts.daily, opts.xlabels []
     const wrap = typeof container === 'string' ? document.querySelector(container) : container;
     if (!wrap) return;
     wrap._chartData = data;
@@ -203,64 +205,110 @@ window.UI = (() => {
     wrap.appendChild(tip);
 
     const dpr = window.devicePixelRatio || 1;
-    const W = wrap.clientWidth, H = wrap.clientHeight;
+    const W = wrap.clientWidth || 560, H = wrap.clientHeight || 240;
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
 
-    const P = 8, PB = 26;
+    const P = 6, PB = 28;
     const max = Math.max(1, ...data.map(h => Math.max(h.up || 0, h.down || 0)));
-    const colUp = (opts.colors && opts.colors.up) || '#a855f7';
-    const colDown = (opts.colors && opts.colors.down) || '#38bdf8';
+    const colUp = (opts.colors && opts.colors.up) || '#a548ff';
+    const colDown = (opts.colors && opts.colors.down) || '#c79aff';
     const css = getComputedStyle(document.documentElement);
-    const gridCol = css.getPropertyValue('--border').trim() || 'rgba(158,130,255,0.13)';
-    const textCol = css.getPropertyValue('--text-3').trim() || '#6f6794';
+    const gridCol = css.getPropertyValue('--border').trim() || 'rgba(120,140,170,0.13)';
+    const textCol = css.getPropertyValue('--text-3').trim() || '#6e7a8e';
 
     ctx.clearRect(0, 0, W, H);
 
     const stepX = data.length > 1 ? (W - P * 2) / (data.length - 1) : 0;
     const plotH = H - P - PB;
 
-    // grid lines
+    // grid lines + Y labels
     ctx.strokeStyle = gridCol; ctx.lineWidth = 1;
-    ctx.fillStyle = textCol; ctx.font = '10px Vazirmatn';
+    ctx.fillStyle = textCol; ctx.font = '10px Vazirmatn, Tahoma';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     for (let i = 0; i <= 3; i++) {
       const y = P + (plotH * i) / 3;
       ctx.beginPath(); ctx.moveTo(P, y); ctx.lineTo(W - P, y); ctx.stroke();
-      ctx.fillText(fmtBytes(max * (1 - i / 3)), 2, y - 3);
+      ctx.fillText(fmtBytes(max * (1 - i / 3)), P + 3, y - 1);
     }
 
     const xAt = (i) => P + i * stepX;
     const yAt = (v) => P + plotH - (v / max) * plotH;
 
-    const series = (key, color) => {
-      ctx.strokeStyle = color; ctx.lineWidth = 2;
-      ctx.beginPath();
-      data.forEach((h, i) => { i === 0 ? ctx.moveTo(xAt(i), yAt(h[key] || 0)) : ctx.lineTo(xAt(i), yAt(h[key] || 0)); });
-      ctx.stroke();
-      ctx.lineTo(xAt(data.length - 1), H - PB);
-      ctx.lineTo(P, H - PB);
-      ctx.closePath();
-      ctx.fillStyle = color + '26';
-      ctx.fill();
-    };
-    series('down', colDown);
-    series('up', colUp);
+    // gradient area fill (under the upload series — reference look)
+    const areaGrad = ctx.createLinearGradient(0, P, 0, H - PB);
+    areaGrad.addColorStop(0, 'rgba(169, 65, 255, .50)');
+    areaGrad.addColorStop(1, 'rgba(124, 42, 255, .02)');
 
-    // x labels (first / middle / last)
+    const buildPath = (key) => {
+      const pts = data.map((h, i) => [xAt(i), yAt(h[key] || 0)]);
+      return pts;
+    };
+
+    // area under 'up'
+    const upPts = buildPath('up');
+    ctx.beginPath();
+    upPts.forEach((p, i) => { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
+    ctx.lineTo(upPts[upPts.length - 1][0], H - PB);
+    ctx.lineTo(P, H - PB);
+    ctx.closePath();
+    ctx.fillStyle = areaGrad;
+    ctx.fill();
+
+    // download line (lighter)
+    ctx.beginPath();
+    buildPath('down').forEach((p, i) => { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
+    ctx.strokeStyle = colDown; ctx.lineWidth = 1.8; ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // upload line (primary, glow)
+    ctx.save();
+    ctx.shadowColor = 'rgba(176, 80, 255, .4)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    upPts.forEach((p, i) => { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
+    ctx.strokeStyle = colUp; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+    ctx.stroke();
+    ctx.restore();
+
+    // points on upload line
+    ctx.fillStyle = '#cf7dff';
+    ctx.strokeStyle = '#e8b6ff';
+    ctx.lineWidth = .5;
+    upPts.forEach((p, i) => {
+      if (i === 0 || i === upPts.length - 1 || i % 2 === 0) {
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], 3.2, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+      }
+    });
+
+    // x labels
+    ctx.textAlign = 'center';
     if (data.length) {
-      const idxs = [0, Math.floor((data.length - 1) / 2), data.length - 1];
-      const shown = new Set();
-      idxs.forEach(i => {
-        if (shown.has(i) || i >= data.length) return;
-        shown.add(i);
+      const lblFor = (i) => {
+        if (opts.xlabels && opts.xlabels[i]) return opts.xlabels[i];
         const d = new Date(data[i].t * 1000);
-        let lbl;
-        if (opts.daily) lbl = d.toLocaleDateString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric' });
-        else lbl = d.toLocaleTimeString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
-        ctx.fillText(lbl, xAt(i) - 14, H - 8);
-      });
+        if (opts.daily) return d.toLocaleDateString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric' });
+        return d.toLocaleTimeString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+      };
+      if (opts.xlabels) {
+        if (data.length > 5 && W < 480) {
+          [0, Math.floor((data.length - 1) / 2), data.length - 1].forEach(i => ctx.fillText(lblFor(i), xAt(i), H - 10));
+        } else {
+          data.forEach((_, i) => ctx.fillText(lblFor(i), xAt(i), H - 10));
+        }
+      } else {
+        const idxs = [0, Math.floor((data.length - 1) / 2), data.length - 1];
+        const shown = new Set();
+        idxs.forEach(i => {
+          if (shown.has(i) || i >= data.length) return;
+          shown.add(i);
+          ctx.fillText(lblFor(i), xAt(i), H - 10);
+        });
+      }
     }
 
     // tooltip
@@ -312,23 +360,21 @@ window.UI = (() => {
   function renderSidebar() {
     const nav = $('#sidebarNav');
     if (!nav) return;
-    const group1 = ['dashboard', 'users', 'configs', 'nodes', 'subscriptions', 'reports'];
-    const group2 = ['settings', 'admins', 'tools'];
+    const order = ['dashboard', 'users', 'configs', 'nodes', 'subscriptions', 'reports', 'settings', 'admins', 'tools'];
     const item = (r) => `
-      <a class="nav-item ${currentRoute === r ? 'active' : ''}" href="#/${r}" data-route="${r}">
-        ${ICONS[r]}<span data-i18n="nav_${r}"></span>
+      <a class="menu-item ${currentRoute === r ? 'active' : ''}" href="#/${r}" data-route="${r}">
+        <div class="menu-icon">${ICONS[r]}</div>
+        <span class="menu-title" data-i18n="nav_${r}"></span>
+        ${r !== 'dashboard' ? '<span class="menu-arrow">⌄</span>' : ''}
       </a>`;
-    nav.innerHTML = `
-      <div class="nav-label" data-i18n="nav_section_main"></div>
-      ${group1.map(item).join('')}
-      <div class="nav-label" data-i18n="nav_section_manage"></div>
-      ${group2.map(item).join('')}`;
+    nav.innerHTML = order.map(item).join('');
     // logout item
     const foot = $('#sidebarFoot');
     foot.innerHTML = `
-      <a class="nav-item logout-item" id="logoutLink" href="#">
-        ${ICONS.logout}<span data-i18n="logout"></span>
-      </a>`;
+      <button class="logout-btn" id="logoutLink">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17L15 12L10 7"/><path d="M15 12H3"/><path d="M13 3H19A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H13"/></svg>
+        <span data-i18n="logout"></span>
+      </button>`;
     $('#logoutLink').addEventListener('click', async (e) => {
       e.preventDefault();
       try { await apiJson('/api/logout', { method: 'POST' }); } catch (_) { /* noop */ }
