@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#06060d">
+  <meta name="theme-color" content="#020814">
   <title>TiTaN — داشبورد</title>
   <link rel="icon" type="image/svg+xml" href="/static/img/emblem.svg">
   <link rel="stylesheet" href="/static/css/fonts.css">
@@ -14,7 +14,14 @@
 
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
-        <img src="/static/img/emblem.svg" alt="TiTaN">
+        <div class="logo-box">
+          <svg viewBox="0 0 64 64" fill="none">
+            <path d="M32 5L55 15L32 28L9 15L32 5Z" fill="#7B3FF2" stroke="#B58AFF" stroke-width="2"/>
+            <path d="M9 15V40L32 54V28L9 15Z" fill="#5221BE" stroke="#A16DFF" stroke-width="2"/>
+            <path d="M55 15V40L32 54V28L55 15Z" fill="#2B146F" stroke="#8B5EFF" stroke-width="2"/>
+            <path d="M20 23L32 29L44 23" stroke="#E5D9FF" stroke-width="2.5"/>
+          </svg>
+        </div>
         <div class="brand-text">
           <span class="brand-name">TiTaN</span>
           <span class="brand-sub">v{{ app_version }}</span>
@@ -28,34 +35,42 @@
 
     <div class="main">
       <header class="topbar">
-        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
-        <button class="icon-btn hide-sm" id="collapseBtn" aria-label="Collapse" title="Collapse">
-          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
         </button>
 
-        <div class="topbar-search">
-          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
-          <input type="search" id="globalSearch" placeholder="جستجو..." aria-label="Search">
-          <span class="kbd">Ctrl K</span>
+        <div class="topbar-right">
+          <div class="profile">
+            <div class="profile-info">
+              <div class="profile-name" id="adminName">مدیر</div>
+              <div class="profile-role"><span id="adminRole">ادمین کل</span> <span class="online-dot"></span></div>
+            </div>
+            <div class="profile-avatar" id="adminAvatar">A</div>
+          </div>
+
+          <div class="top-icons">
+            <button class="top-icon hide-sm" id="collapseBtn" aria-label="Collapse" title="Collapse">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="top-icon" id="bellBtn" aria-label="Notifications" title="Notifications">
+              <span class="notification-dot"></span>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8A6 6 0 0 1 18 8C18 15 21 16 21 18H3C3 16 6 15 6 8Z"/><path d="M10 21H14"/></svg>
+              <span class="dot count" id="bellDot" style="display:none">0</span>
+            </button>
+            <button class="top-icon" id="statusBtn" aria-label="System status" title="System">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3V6"/></svg>
+            </button>
+            <button class="top-icon hide-sm" aria-label="Messages" title="Messages">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 18H21C21 16 18 15 18 8Z"/><path d="M10 21H14"/></svg>
+            </button>
+          </div>
         </div>
 
-        <div class="topbar-actions">
-          <button class="icon-btn" id="bellBtn" aria-label="Notifications" title="Notifications">
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-            <span class="dot count" id="bellDot" style="display:none">0</span>
-          </button>
-          <button class="icon-btn" id="statusBtn" aria-label="System status" title="System">
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          </button>
-          <button class="icon-btn hide-sm" aria-label="Messages" title="Messages">
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </button>
-          <div class="admin-chip">
-            <div class="avatar" id="adminAvatar">A<span class="status-dot"></span></div>
-            <div class="admin-meta">
-              <span class="admin-name" id="adminName">مدیر</span>
-              <span class="admin-role" id="adminRole">ادمین کل</span>
-            </div>
+        <div class="topbar-left">
+          <div class="search-box">
+            <span class="shortcut">Ctrl + K</span>
+            <input class="search-input" type="search" id="globalSearch" placeholder="جستجو..." aria-label="Search">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20L16 16"/></svg>
           </div>
         </div>
       </header>
@@ -74,12 +89,9 @@
       try {
         const me = await UI.apiJson('/api/me');
         if (!me || !me.logged_in) { location.href = '/login'; return; }
-        // theme from settings
         const theme = (me.settings && me.settings.theme) || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
-        // admin name
         UI.boot();
-        // initial header badge
         UI.apiJson('/api/stats').then(s => {
           const b = document.getElementById('bellDot');
           if (b) {
