@@ -1,297 +1,755 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TiTaN — ورود</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <!-- CSS طراحی TiTaN -->
-  <link rel="stylesheet" href="/static/css/titan-ui.css">
+    <meta name="theme-color" content="#030306">
+    <meta name="color-scheme" content="dark">
+
+    <title>TiTaN — ورود</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', path='css/titan-ui.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 </head>
 
-<body class="titan-auth">
+<body class="titan-login-page">
 
-  <div class="auth-bg">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="grid-overlay"></div>
-  </div>
+    <!-- =========================================================
+         BACKGROUND
+    ========================================================== -->
 
-  <main class="auth-page">
+    <div class="titan-background">
 
-    <section class="auth-card">
+        <div class="titan-bg-grid"></div>
 
-      <!-- Brand -->
-      <div class="brand-lockup">
+        <div class="titan-bg-glow titan-bg-glow-1"></div>
+        <div class="titan-bg-glow titan-bg-glow-2"></div>
 
-        <div class="brand-mark">
-          T
+        <div class="titan-particles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
-        <div>
-          <div class="brand-name">
-            TiTaN
-          </div>
+    </div>
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
 
-          <div class="brand-caption">
-            CONTROL PANEL
-          </div>
-        </div>
+    <main class="titan-login">
 
-      </div>
+        <!-- =====================================================
+             LEFT SIDE — LOGIN CARD
+        ====================================================== -->
 
+        <section class="titan-login-panel">
 
-      <!-- Heading -->
-      <div class="auth-heading">
+            <div class="titan-login-panel-inner">
 
-        <h1>
-          خوش آمدید
-        </h1>
+                <!-- Brand -->
 
-        <p>
-          برای ورود به پنل مدیریت TiTaN اطلاعات خود را وارد کنید.
-        </p>
+                <div class="titan-brand">
 
-      </div>
+                    <div class="titan-brand-mark">
+                        <svg viewBox="0 0 100 100"
+                             aria-hidden="true">
 
+                            <defs>
+                                <linearGradient id="logoGradient"
+                                                x1="0%"
+                                                y1="0%"
+                                                x2="100%"
+                                                y2="100%">
+                                    <stop offset="0%"
+                                          stop-color="#8b35ff"/>
+                                    <stop offset="50%"
+                                          stop-color="#6d20ff"/>
+                                    <stop offset="100%"
+                                          stop-color="#a86cff"/>
+                                </linearGradient>
+                            </defs>
 
-      <!-- Login Form -->
-      <form id="login-form" class="auth-form">
+                            <path
+                                d="M50 5
+                                   L89 27
+                                   L89 73
+                                   L50 95
+                                   L11 73
+                                   L11 27
+                                   Z"
+                                fill="none"
+                                stroke="url(#logoGradient)"
+                                stroke-width="6"/>
 
-        <!-- Username -->
-        <label class="field">
+                            <path
+                                d="M50 22
+                                   L73 35
+                                   L73 62
+                                   L50 76
+                                   L27 62
+                                   L27 35
+                                   Z"
+                                fill="none"
+                                stroke="url(#logoGradient)"
+                                stroke-width="5"/>
 
-          <span>
-            نام کاربری
-          </span>
+                            <path
+                                d="M50 22 V76"
+                                stroke="url(#logoGradient)"
+                                stroke-width="5"/>
 
-          <div class="input-wrap">
+                        </svg>
+                    </div>
 
-            <span class="input-icon">
-              ◉
-            </span>
+                    <div class="titan-brand-name">
+                        <span class="titan-brand-ti">Ti</span><span>TaN</span>
+                    </div>
 
-            <input
-              id="username"
-              name="username"
-              type="text"
-              autocomplete="username"
-              placeholder="نام کاربری خود را وارد کنید"
-              required
-            >
+                </div>
 
-          </div>
 
-        </label>
+                <!-- Heading -->
 
+                <div class="titan-login-heading">
 
-        <!-- Password -->
-        <label class="field">
+                    <h1>
+                        به <span>TiTaN</span> خوش آمدید
+                    </h1>
 
-          <span>
-            رمز عبور
-          </span>
+                    <p>
+                        برای ورود به پنل، نام کاربری خود را وارد کنید
+                    </p>
 
-          <div class="input-wrap">
+                </div>
 
-            <span class="input-icon">
-              ◆
-            </span>
 
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="رمز عبور خود را وارد کنید"
-              required
-            >
+                <!-- Login Form -->
 
-            <button
-              class="password-toggle"
-              type="button"
-              aria-label="نمایش رمز"
-            >
-              ◉
-            </button>
+                <form
+                    id="titanLoginForm"
+                    class="titan-login-form"
+                    method="POST"
+                    action="/api/login"
+                    autocomplete="on"
+                >
 
-          </div>
+                    <div class="titan-field">
 
-        </label>
+                        <label for="username">
+                            نام کاربری
+                        </label>
 
+                        <div class="titan-input-wrapper">
 
-        <!-- Options -->
-        <div class="auth-options">
+                            <span class="titan-input-icon">
 
-          <label class="check-row">
+                                <svg viewBox="0 0 24 24"
+                                     aria-hidden="true">
 
-            <input
-              id="remember"
-              type="checkbox"
-            >
+                                    <path
+                                        d="M20 21
+                                           C20 17.7 17.3 15 14 15
+                                           H10
+                                           C6.7 15 4 17.7 4 21"/>
 
-            <span class="check-box"></span>
+                                    <circle cx="12"
+                                            cy="7"
+                                            r="4"/>
 
-            <span>
-              مرا به خاطر بسپار
-            </span>
+                                </svg>
 
-          </label>
+                            </span>
 
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="نام کاربری"
+                                autocomplete="username"
+                                required
+                                spellcheck="false"
+                            >
 
-          <a
-            href="#"
-            class="text-link"
-          >
-            فراموشی رمز عبور؟
-          </a>
+                        </div>
 
-        </div>
+                    </div>
 
 
-        <!-- Submit -->
-        <button
-          class="primary-btn auth-submit"
-          type="submit"
-        >
+                    <!-- Login button -->
 
-          <span>
-            ورود به پنل
-          </span>
+                    <button
+                        type="submit"
+                        class="titan-login-button"
+                        id="titanLoginButton"
+                    >
 
-          <span class="btn-arrow">
-            ←
-          </span>
+                        <span class="titan-button-text">
+                            ورود
+                        </span>
 
-        </button>
+                        <span class="titan-button-arrow">
+                            <svg viewBox="0 0 24 24"
+                                 aria-hidden="true">
+                                <path d="M19 12H5"/>
+                                <path d="M12 19L5 12L12 5"/>
+                            </svg>
+                        </span>
 
+                        <span class="titan-button-loader"
+                              aria-hidden="true"></span>
 
-        <!-- Message -->
-        <div
-          id="login-message"
-          class="form-message"
-          hidden
-        ></div>
+                    </button>
 
-      </form>
+                </form>
 
 
-      <!-- Support -->
-      <div class="auth-footer">
+                <!-- Error -->
 
-        <span>
-          نیاز به کمک دارید؟
-        </span>
+                <div
+                    id="titanLoginError"
+                    class="titan-login-error"
+                    role="alert"
+                    hidden
+                ></div>
 
-        <a
-          href="#"
-          class="support-link"
-        >
-          پشتیبانی تلگرام
-        </a>
 
-      </div>
+                <!-- Quick Access -->
 
+                <div class="titan-quick-access">
 
-      <!-- Secure -->
-      <div class="secure-note">
+                    <div class="titan-section-divider">
 
-        <span class="secure-dot"></span>
+                        <span></span>
 
-        اتصال امن و رمزنگاری‌شده
+                        <strong>
+                            دسترسی سریع
+                        </strong>
 
-      </div>
+                        <span></span>
 
-    </section>
+                    </div>
 
 
-    <footer class="auth-page-footer">
+                    <div class="titan-quick-grid">
 
-      <span>
-        TiTaN Control Panel
-      </span>
+                        <!-- Support -->
 
-      <span>
-        •
-      </span>
+                        <a
+                            href="#"
+                            class="titan-quick-card"
+                            id="titanSupportLink"
+                        >
 
-      <span>
-        Secure Administration
-      </span>
+                            <div class="titan-quick-icon">
 
-    </footer>
+                                <svg viewBox="0 0 24 24"
+                                     aria-hidden="true">
 
-  </main>
+                                    <path
+                                        d="M4 13
+                                           V11
+                                           A8 8 0 0 1 20 11
+                                           V13"/>
 
+                                    <path
+                                        d="M4 13
+                                           A2 2 0 0 0 6 15
+                                           H7
+                                           V11
+                                           H6
+                                           A2 2 0 0 0 4 13Z"/>
 
-  <script>
+                                    <path
+                                        d="M20 13
+                                           A2 2 0 0 1 18 15
+                                           H17
+                                           V11
+                                           H18
+                                           A2 2 0 0 1 20 13Z"/>
 
-    /*
-      IMPORTANT:
+                                    <path
+                                        d="M17 17
+                                           C16 19 14 20 12 20
+                                           H10"/>
 
-      هنگام قرار دادن این UI داخل پروژه اصلی،
-      منطق Login فعلی پروژه را حذف نکن.
+                                </svg>
 
-      فقط HTML/CSS ظاهری این فایل را استفاده کن
-      و event handler / API login فعلی پروژه را نگه دار.
-    */
+                            </div>
 
+                            <div class="titan-quick-content">
 
-    const password =
-      document.getElementById("password");
+                                <strong>
+                                    پشتیبانی
+                                </strong>
 
-    const toggle =
-      document.querySelector(".password-toggle");
+                                <span>
+                                    با تیم پشتیبانی در ارتباط باشید
+                                </span>
 
+                            </div>
 
-    toggle.addEventListener("click", () => {
+                        </a>
 
-      const visible =
-        password.type === "text";
 
-      password.type =
-        visible
-          ? "password"
-          : "text";
+                        <!-- Telegram -->
 
-      toggle.setAttribute(
-        "aria-label",
-        visible
-          ? "نمایش رمز"
-          : "مخفی کردن رمز"
-      );
+                        <a
+                            href="#"
+                            class="titan-quick-card"
+                            id="titanTelegramLink"
+                        >
 
-    });
+                            <div class="titan-quick-icon">
 
+                                <svg viewBox="0 0 24 24"
+                                     aria-hidden="true">
 
-    /*
-      نمونه نمایشی است.
-      در پروژه اصلی این بخش را با Login API فعلی
-      پروژه جایگزین/ادغام کن.
-    */
+                                    <path
+                                        d="M21 4
+                                           L18 20
+                                           L13 16
+                                           L10 19
+                                           V14
+                                           L18 7
+                                           L7 14
+                                           L3 12
+                                           Z"/>
 
-    const form =
-      document.getElementById("login-form");
+                                </svg>
 
+                            </div>
 
-    form.addEventListener("submit", (event) => {
+                            <div class="titan-quick-content">
 
-      event.preventDefault();
+                                <strong>
+                                    چنل تلگرام
+                                </strong>
 
-      const message =
-        document.getElementById("login-message");
+                                <span>
+                                    به کانال رسمی ما بپیوندید
+                                </span>
 
-      message.hidden = false;
+                            </div>
 
-      message.className =
-        "form-message info";
+                        </a>
 
-      message.textContent =
-        "منطق ورود فعلی پروژه را در این بخش نگه دارید.";
+                    </div>
 
-    });
+                </div>
 
-  </script>
+
+                <!-- Footer -->
+
+                <footer class="titan-login-footer">
+
+                    <span>
+                        TiTaN
+                    </span>
+
+                    <span>
+                        © 2024
+                    </span>
+
+                    <span>
+                        تمامی حقوق محفوظ است
+                    </span>
+
+                </footer>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             RIGHT SIDE — HERO
+        ====================================================== -->
+
+        <section class="titan-hero">
+
+            <div class="titan-hero-scene">
+
+                <!-- Tunnel -->
+
+                <div class="titan-tunnel">
+
+                    <div class="tunnel-line line-1"></div>
+                    <div class="tunnel-line line-2"></div>
+                    <div class="tunnel-line line-3"></div>
+                    <div class="tunnel-line line-4"></div>
+                    <div class="tunnel-line line-5"></div>
+                    <div class="tunnel-line line-6"></div>
+
+                    <div class="tunnel-frame frame-1"></div>
+                    <div class="tunnel-frame frame-2"></div>
+                    <div class="tunnel-frame frame-3"></div>
+                    <div class="tunnel-frame frame-4"></div>
+
+                </div>
+
+
+                <!-- Large TiTaN Cube -->
+
+                <div class="titan-hero-logo">
+
+                    <div class="titan-cube-glow"></div>
+
+                    <svg
+                        class="titan-cube"
+                        viewBox="0 0 500 560"
+                        aria-hidden="true"
+                    >
+
+                        <defs>
+
+                            <linearGradient
+                                id="cubeTop"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%"
+                            >
+                                <stop offset="0%"
+                                      stop-color="#a25cff"/>
+                                <stop offset="100%"
+                                      stop-color="#4f0dca"/>
+                            </linearGradient>
+
+                            <linearGradient
+                                id="cubeLeft"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%"
+                            >
+                                <stop offset="0%"
+                                      stop-color="#7624f5"/>
+                                <stop offset="100%"
+                                      stop-color="#25005e"/>
+                            </linearGradient>
+
+                            <linearGradient
+                                id="cubeRight"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%"
+                            >
+                                <stop offset="0%"
+                                      stop-color="#913fff"/>
+                                <stop offset="100%"
+                                      stop-color="#36007d"/>
+                            </linearGradient>
+
+                            <filter
+                                id="cubeGlow"
+                                x="-100%"
+                                y="-100%"
+                                width="300%"
+                                height="300%"
+                            >
+                                <feGaussianBlur
+                                    stdDeviation="12"
+                                    result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+
+                        </defs>
+
+
+                        <!-- Top -->
+
+                        <polygon
+                            points="250,45 420,135 250,225 80,135"
+                            fill="url(#cubeTop)"
+                            stroke="#a96cff"
+                            stroke-width="5"
+                            filter="url(#cubeGlow)"
+                        />
+
+
+                        <!-- Left -->
+
+                        <polygon
+                            points="80,135 250,225 250,440 80,350"
+                            fill="url(#cubeLeft)"
+                            stroke="#8e3fff"
+                            stroke-width="5"
+                        />
+
+
+                        <!-- Right -->
+
+                        <polygon
+                            points="250,225 420,135 420,350 250,440"
+                            fill="url(#cubeRight)"
+                            stroke="#a65bff"
+                            stroke-width="5"
+                        />
+
+
+                        <!-- Inner left -->
+
+                        <polygon
+                            points="126,160 215,207 215,365 126,318"
+                            fill="none"
+                            stroke="#b477ff"
+                            stroke-width="8"
+                        />
+
+
+                        <!-- Inner right -->
+
+                        <polygon
+                            points="285,207 374,160 374,318 285,365"
+                            fill="none"
+                            stroke="#b477ff"
+                            stroke-width="8"
+                        />
+
+
+                        <!-- Center -->
+
+                        <path
+                            d="M250 225
+                               V440"
+                            stroke="#c188ff"
+                            stroke-width="8"
+                        />
+
+                    </svg>
+
+                </div>
+
+
+                <!-- Floor -->
+
+                <div class="titan-floor">
+
+                    <div class="titan-floor-core"></div>
+
+                    <div class="titan-floor-ring ring-1"></div>
+                    <div class="titan-floor-ring ring-2"></div>
+                    <div class="titan-floor-ring ring-3"></div>
+                    <div class="titan-floor-ring ring-4"></div>
+
+                    <div class="titan-floor-grid"></div>
+
+                </div>
+
+
+                <!-- Light -->
+
+                <div class="titan-hero-light"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         OPTIONAL EXISTING LOGIN CONFIG
+         این مقادیر را در صورت وجود، با تنظیمات فعلی پروژه نگه دار
+    ========================================================== -->
+
+    <script>
+        /*
+         * =========================================================
+         * TiTaN UI
+         * =========================================================
+         *
+         * این بخش فقط رفتار ظاهری UI را کنترل می‌کند.
+         *
+         * اگر پروژه فعلی login handler دارد:
+         * آن handler را حذف نکن و فقط UI را به آن متصل کن.
+         *
+         * =========================================================
+         */
+
+        (() => {
+
+            const form = document.getElementById("titanLoginForm");
+            const button = document.getElementById("titanLoginButton");
+            const errorBox = document.getElementById("titanLoginError");
+
+            if (!form) return;
+
+
+            function setLoading(state) {
+
+                if (state) {
+                    button.classList.add("is-loading");
+                    button.disabled = true;
+                } else {
+                    button.classList.remove("is-loading");
+                    button.disabled = false;
+                }
+
+            }
+
+
+            function showError(message) {
+
+                if (!errorBox) return;
+
+                errorBox.textContent = message;
+                errorBox.hidden = false;
+
+            }
+
+
+            function hideError() {
+
+                if (!errorBox) return;
+
+                errorBox.hidden = true;
+                errorBox.textContent = "";
+
+            }
+
+
+            /*
+             * اگر login فعلی پروژه از submit معمولی استفاده می‌کند،
+             * این listener را می‌توان حذف کرد.
+             *
+             * اگر login فعلی با JS/API انجام می‌شود،
+             * منطق قبلی پروژه باید اینجا حفظ شود.
+             */
+
+            form.addEventListener("submit", async (event) => {
+
+                /*
+                 * =================================================
+                 * IMPORTANT
+                 *
+                 * برای جلوگیری از خراب شدن Backend،
+                 * این قسمت را با login handler فعلی پروژه
+                 * هماهنگ کن.
+                 *
+                 * =================================================
+                 */
+
+                if (form.dataset.nativeSubmit === "true") {
+                    return;
+                }
+
+                event.preventDefault();
+
+                hideError();
+
+                const username =
+                    document.getElementById("username")?.value.trim();
+
+                if (!username) {
+
+                    showError("لطفاً نام کاربری را وارد کنید.");
+                    return;
+
+                }
+
+                setLoading(true);
+
+                /*
+                 * اگر API فعلی پروژه /api/login است، می‌توانی
+                 * این بخش را با payload واقعی Backend جایگزین کنی.
+                 */
+
+                try {
+
+                    const response = await fetch("/api/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username: username
+                        })
+                    });
+
+                    let data = {};
+
+                    try {
+                        data = await response.json();
+                    } catch (_) {}
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            data.message ||
+                            "ورود انجام نشد."
+                        );
+
+                    }
+
+                    /*
+                     * رفتار موفقیت را از Backend فعلی پروژه بگیر.
+                     */
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        window.location.href = "/";
+                    }
+
+                } catch (error) {
+
+                    showError(
+                        error?.message ||
+                        "خطایی هنگام ورود رخ داد."
+                    );
+
+                    setLoading(false);
+
+                }
+
+            });
+
+
+            /*
+             * Quick links
+             *
+             * لینک‌های واقعی پروژه را اینجا قرار بده.
+             */
+
+            const supportLink =
+                document.getElementById("titanSupportLink");
+
+            const telegramLink =
+                document.getElementById("titanTelegramLink");
+
+
+            /*
+             * مثال:
+             *
+             * supportLink.href = "/support";
+             * telegramLink.href = "https://t.me/...";
+             *
+             * لینک واقعی فعلی پروژه را جایگزین کن.
+             */
+
+        })();
+    </script>
 
 </body>
 </html>
