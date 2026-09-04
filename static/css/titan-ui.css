@@ -1,628 +1,1674 @@
-:root {
+/* ================================================================
+   TiTaN — LOGIN UI
+   Visual reference based on the supplied TiTaN design
+   ================================================================ */
 
-  --bg: #07070c;
-  --bg2: #0b0a12;
 
-  --panel: rgba(17, 15, 28, .78);
-  --panel2: #11101b;
+/* ================================================================
+   RESET
+   ================================================================ */
 
-  --border:
-    rgba(174, 122, 255, .16);
-
-  --border-strong:
-    rgba(174, 122, 255, .28);
-
-  --purple: #a855f7;
-  --purple2: #7c3aed;
-
-  --text: #f5f1ff;
-  --muted: #8e879d;
-
-  --green: #4ade80;
-  --orange: #f59e0b;
-  --cyan: #22d3ee;
-  --danger: #fb7185;
-
-  --shadow:
-    0 18px 60px rgba(0, 0, 0, .36);
-
-  --radius: 18px;
-
-  --font:
-    Tahoma,
-    "Vazirmatn",
-    "Segoe UI",
-    sans-serif;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-
-* {
-  box-sizing: border-box;
+html {
+    width: 100%;
+    min-height: 100%;
+    background: #030306;
 }
-
-
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-}
-
 
 body {
-  direction: rtl;
-}
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
 
+    background:
+        radial-gradient(
+            circle at 75% 45%,
+            rgba(91, 24, 185, 0.10),
+            transparent 34%
+        ),
+        #030306;
+
+    color: #ffffff;
+
+    font-family:
+        "Vazirmatn",
+        Tahoma,
+        Arial,
+        sans-serif;
+
+    overflow-x: hidden;
+}
 
 button,
 input {
-  font: inherit;
+    font-family: inherit;
 }
 
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 
-button {
-  border: 0;
-  cursor: pointer;
+/* ================================================================
+   BACKGROUND
+   ================================================================ */
+
+.titan-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
 }
 
 
-/* =========================================
-   LOGIN
-========================================= */
+.titan-bg-grid {
+    position: absolute;
+    inset: -20%;
 
-.titan-auth {
+    opacity: 0.14;
 
-  min-height: 100vh;
+    background-image:
+        linear-gradient(
+            rgba(116, 45, 255, 0.10) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(116, 45, 255, 0.10) 1px,
+            transparent 1px
+        );
 
-  overflow: hidden;
+    background-size: 70px 70px;
 
-  background:
-    radial-gradient(
-      circle at 50% 20%,
-      #171026 0,
-      #090810 42%,
-      #050508 100%
-    );
+    transform:
+        perspective(800px)
+        rotateX(65deg)
+        translateY(25%);
+
+    transform-origin: center bottom;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            transparent 5%,
+            #000 45%,
+            transparent 100%
+        );
 }
 
 
-.auth-bg {
+.titan-bg-glow {
+    position: absolute;
 
-  position: fixed;
+    width: 500px;
+    height: 500px;
 
-  inset: 0;
+    border-radius: 50%;
 
-  pointer-events: none;
+    background: rgba(91, 25, 210, 0.14);
+
+    filter: blur(110px);
 }
 
 
-.orb {
-
-  position: absolute;
-
-  border-radius: 50%;
-
-  filter: blur(80px);
-
-  opacity: .28;
+.titan-bg-glow-1 {
+    right: 8%;
+    top: 15%;
 }
 
 
-.orb-1 {
+.titan-bg-glow-2 {
+    left: 10%;
+    bottom: -10%;
 
-  width: 420px;
-  height: 420px;
+    width: 400px;
+    height: 250px;
 
-  background: #7c3aed;
-
-  top: -160px;
-  right: -100px;
+    background: rgba(87, 24, 210, 0.16);
 }
 
 
-.orb-2 {
-
-  width: 360px;
-  height: 360px;
-
-  background: #4c1d95;
-
-  bottom: -160px;
-  left: -100px;
+.titan-particles {
+    position: absolute;
+    inset: 0;
 }
 
 
-.grid-overlay {
+.titan-particles span {
+    position: absolute;
 
-  position: absolute;
+    width: 2px;
+    height: 2px;
 
-  inset: 0;
+    border-radius: 50%;
 
-  opacity: .12;
+    background: #914dff;
 
-  background-image:
+    opacity: 0.45;
 
-    linear-gradient(
-      rgba(255,255,255,.06) 1px,
-      transparent 1px
-    ),
-
-    linear-gradient(
-      90deg,
-      rgba(255,255,255,.06) 1px,
-      transparent 1px
-    );
-
-  background-size: 42px 42px;
-
-  mask-image:
-    linear-gradient(
-      to bottom,
-      black,
-      transparent 80%
-    );
+    box-shadow:
+        0 0 8px rgba(137, 63, 255, 0.8);
 }
 
 
-.auth-page {
+.titan-particles span:nth-child(1) {
+    left: 8%;
+    top: 21%;
+}
 
-  position: relative;
+.titan-particles span:nth-child(2) {
+    left: 18%;
+    top: 76%;
+}
 
-  z-index: 1;
+.titan-particles span:nth-child(3) {
+    left: 35%;
+    top: 17%;
+}
 
-  min-height: 100vh;
+.titan-particles span:nth-child(4) {
+    left: 58%;
+    top: 9%;
+}
 
-  display: flex;
+.titan-particles span:nth-child(5) {
+    left: 73%;
+    top: 26%;
+}
 
-  flex-direction: column;
+.titan-particles span:nth-child(6) {
+    left: 87%;
+    top: 66%;
+}
 
-  align-items: center;
+.titan-particles span:nth-child(7) {
+    left: 67%;
+    top: 83%;
+}
 
-  justify-content: center;
-
-  padding: 40px 20px;
+.titan-particles span:nth-child(8) {
+    left: 42%;
+    top: 91%;
 }
 
 
-.auth-card {
+/* ================================================================
+   MAIN LAYOUT
+   ================================================================ */
 
-  width: min(460px, 100%);
+.titan-login {
+    position: relative;
+    z-index: 2;
 
-  padding: 38px;
+    min-height: 100vh;
 
-  border:
-    1px solid var(--border-strong);
+    display: grid;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(21,18,35,.9),
-      rgba(9,9,15,.86)
-    );
+    grid-template-columns:
+        minmax(430px, 0.82fr)
+        minmax(560px, 1.18fr);
 
-  box-shadow:
-    var(--shadow),
-    0 0 80px rgba(124,58,237,.09);
+    align-items: center;
 
-  border-radius: 26px;
+    padding:
+        60px
+        clamp(60px, 7vw, 130px);
 
-  backdrop-filter: blur(24px);
+    gap: clamp(30px, 5vw, 100px);
 }
 
 
-/* Brand */
+/* ================================================================
+   LOGIN PANEL
+   ================================================================ */
 
-.brand-lockup {
+.titan-login-panel {
+    width: 100%;
+    max-width: 620px;
 
-  display: flex;
+    justify-self: center;
 
-  align-items: center;
+    position: relative;
 
-  gap: 13px;
+    padding: 1px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(155, 82, 255, 0.34),
+            rgba(255, 255, 255, 0.08) 35%,
+            rgba(100, 28, 195, 0.20) 100%
+        );
+
+    box-shadow:
+        0 0 0 1px rgba(123, 54, 255, 0.06),
+        0 30px 90px rgba(0, 0, 0, 0.65),
+        0 0 80px rgba(83, 24, 184, 0.10);
 }
 
 
-.brand-mark {
+.titan-login-panel-inner {
+    position: relative;
 
-  width: 44px;
-  height: 44px;
+    border-radius: 27px;
 
-  border-radius: 13px;
+    padding:
+        55px
+        50px
+        40px;
 
-  display: grid;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11, 11, 16, 0.97),
+            rgba(5, 5, 9, 0.98)
+        );
 
-  place-items: center;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 
-  font-weight: 900;
-
-  font-size: 23px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #c084fc,
-      #7c3aed
-    );
-
-  box-shadow:
-    0 0 28px rgba(168,85,247,.38);
-
-  color: white;
+    overflow: hidden;
 }
 
 
-.brand-name {
+.titan-login-panel-inner::before {
+    content: "";
 
-  font-weight: 900;
+    position: absolute;
 
-  font-size: 21px;
+    width: 280px;
+    height: 280px;
 
-  letter-spacing: 2px;
+    top: -170px;
+    right: -120px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(121, 47, 255, 0.14),
+            transparent 70%
+        );
+
+    pointer-events: none;
 }
 
 
-.brand-caption {
+.titan-login-panel-inner::after {
+    content: "";
 
-  font-size: 8px;
+    position: absolute;
 
-  letter-spacing: 2.4px;
+    left: 12%;
+    right: 12%;
+    bottom: 0;
 
-  color: #8e879d;
+    height: 1px;
 
-  margin-top: 2px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(132, 61, 255, 0.45),
+            transparent
+        );
+
+    opacity: 0.5;
 }
 
 
-/* Heading */
+/* ================================================================
+   BRAND
+   ================================================================ */
 
-.auth-heading {
+.titan-brand {
+    position: relative;
+    z-index: 2;
 
-  margin: 42px 0 28px;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    direction: ltr;
+
+    margin-bottom: 34px;
 }
 
 
-.auth-heading h1 {
+.titan-brand-mark {
+    width: 58px;
+    height: 58px;
 
-  margin: 0 0 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  font-size: 30px;
+    filter:
+        drop-shadow(
+            0 0 15px rgba(126, 50, 255, 0.70)
+        );
 }
 
 
-.auth-heading p {
-
-  margin: 0;
-
-  color: var(--muted);
-
-  font-size: 13px;
-
-  line-height: 1.9;
+.titan-brand-mark svg {
+    width: 100%;
+    height: 100%;
 }
 
 
-/* Form */
+.titan-brand-name {
+    font-family:
+        Arial,
+        sans-serif;
 
-.auth-form {
+    font-size: clamp(35px, 3vw, 50px);
 
-  display: grid;
+    font-weight: 800;
 
-  gap: 18px;
+    letter-spacing: -2px;
+
+    color: #f4f1fa;
+
+    text-shadow:
+        0 0 25px rgba(255, 255, 255, 0.06);
 }
 
 
-.field {
+.titan-brand-ti {
+    color: #8d43ff;
 
-  display: grid;
-
-  gap: 9px;
-
-  font-size: 12px;
-
-  color: #c9c1d5;
+    text-shadow:
+        0 0 25px rgba(126, 53, 255, 0.65);
 }
 
 
-.input-wrap {
+/* ================================================================
+   HEADING
+   ================================================================ */
 
-  height: 52px;
+.titan-login-heading {
+    position: relative;
+    z-index: 2;
 
-  display: flex;
+    text-align: center;
 
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 0 14px;
-
-  border:
-    1px solid rgba(255,255,255,.09);
-
-  border-radius: 13px;
-
-  background:
-    rgba(255,255,255,.035);
-
-  transition: .2s;
+    margin-bottom: 36px;
 }
 
 
-.input-wrap:focus-within {
+.titan-login-heading h1 {
+    margin: 0 0 13px;
 
-  border-color:
-    rgba(168,85,247,.65);
+    font-size: clamp(25px, 2.2vw, 34px);
 
-  box-shadow:
-    0 0 0 4px
-    rgba(168,85,247,.08);
+    font-weight: 700;
+
+    color: #f5f2fa;
+
+    letter-spacing: -0.7px;
 }
 
 
-.input-icon {
+.titan-login-heading h1 span {
+    color: #9c59ff;
 
-  color: #8b5cf6;
-
-  font-size: 14px;
+    text-shadow:
+        0 0 22px rgba(138, 61, 255, 0.35);
 }
 
 
-.input-wrap input {
+.titan-login-heading p {
+    margin: 0;
 
-  width: 100%;
+    color: #85818d;
 
-  border: 0;
+    font-size: 14px;
 
-  outline: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 13px;
+    font-weight: 400;
 }
 
 
-.input-wrap input::placeholder {
+/* ================================================================
+   FORM
+   ================================================================ */
 
-  color: #625c6e;
+.titan-login-form {
+    position: relative;
+    z-index: 2;
 }
 
 
-.password-toggle {
-
-  background: transparent;
-
-  color: #716a7d;
+.titan-field {
+    margin-bottom: 20px;
 }
 
 
-/* Options */
+.titan-field label {
+    display: block;
 
-.auth-options {
+    margin: 0 4px 9px;
 
-  display: flex;
+    color: #9b97a4;
 
-  align-items: center;
+    font-size: 13px;
 
-  justify-content: space-between;
-
-  margin-top: -3px;
-
-  font-size: 11px;
-
-  color: #898195;
+    font-weight: 500;
 }
 
 
-.check-row {
+.titan-input-wrapper {
+    position: relative;
 
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  cursor: pointer;
+    height: 68px;
 }
 
 
-.check-row input {
+.titan-input-wrapper::before {
+    content: "";
 
-  display: none;
+    position: absolute;
+    inset: 0;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    background:
+        rgba(255, 255, 255, 0.018);
+
+    pointer-events: none;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
 }
 
 
-.check-box {
+.titan-input-wrapper:focus-within::before {
+    border-color:
+        rgba(135, 65, 255, 0.78);
 
-  width: 15px;
-  height: 15px;
+    background:
+        rgba(116, 40, 255, 0.025);
 
-  border-radius: 5px;
-
-  border:
-    1px solid #4b4357;
-
-  background: #0d0c13;
+    box-shadow:
+        0 0 0 3px rgba(110, 39, 220, 0.08),
+        0 0 30px rgba(105, 39, 221, 0.08);
 }
 
 
-.check-row input:checked
-+ .check-box {
+.titan-input-icon {
+    position: absolute;
 
-  background: var(--purple);
+    right: 20px;
+    top: 50%;
 
-  border-color: var(--purple);
+    width: 23px;
+    height: 23px;
 
-  box-shadow:
-    0 0 12px
-    rgba(168,85,247,.4);
+    transform: translateY(-50%);
+
+    color: #77727f;
+
+    z-index: 2;
+
+    pointer-events: none;
 }
 
 
-.text-link,
-.support-link {
+.titan-input-icon svg {
+    width: 100%;
+    height: 100%;
 
-  color: #b779ff;
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.5;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 
-/* Button */
+.titan-input-wrapper input {
+    position: relative;
 
-.primary-btn {
+    width: 100%;
+    height: 100%;
 
-  height: 52px;
+    padding:
+        0 58px
+        0 20px;
 
-  border-radius: 13px;
+    border: 0;
+    outline: 0;
 
-  color: white;
+    background: transparent;
 
-  background:
-    linear-gradient(
-      135deg,
-      #a855f7,
-      #7c3aed
-    );
+    color: #f2eff8;
 
-  box-shadow:
-    0 12px 28px
-    rgba(124,58,237,.28);
+    font-size: 15px;
 
-  font-weight: 800;
+    text-align: right;
+
+    direction: rtl;
+
+    z-index: 1;
 }
 
 
-.auth-submit {
+.titan-input-wrapper input::placeholder {
+    color: #595560;
 
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 12px;
-
-  margin-top: 3px;
+    opacity: 1;
 }
 
 
-.btn-arrow {
-
-  font-size: 18px;
+.titan-input-wrapper input:focus::placeholder {
+    color: #716b78;
 }
 
 
-/* Messages */
+/* ================================================================
+   BUTTON
+   ================================================================ */
 
-.form-message {
+.titan-login-button {
+    position: relative;
 
-  padding: 11px 13px;
+    width: 100%;
+    height: 68px;
 
-  border-radius: 10px;
+    margin-top: 7px;
 
-  background:
-    rgba(168,85,247,.09);
+    border: 0;
+    border-radius: 14px;
 
-  border:
-    1px solid rgba(168,85,247,.2);
+    cursor: pointer;
 
-  font-size: 11px;
+    overflow: hidden;
 
-  color: #c9b4df;
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            105deg,
+            #7426ed 0%,
+            #8c36ff 50%,
+            #6920dc 100%
+        );
+
+    box-shadow:
+        0 12px 35px rgba(104, 33, 224, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        filter 0.22s ease;
 }
 
 
-.auth-footer {
+.titan-login-button::before {
+    content: "";
 
-  display: flex;
+    position: absolute;
 
-  justify-content: center;
+    inset: 0;
 
-  gap: 7px;
+    background:
+        linear-gradient(
+            110deg,
+            transparent 15%,
+            rgba(255, 255, 255, 0.14) 50%,
+            transparent 85%
+        );
 
-  margin-top: 25px;
+    transform: translateX(-120%);
 
-  color: #6f687b;
-
-  font-size: 11px;
+    transition:
+        transform 0.65s ease;
 }
 
 
-.secure-note {
+.titan-login-button:hover {
+    transform: translateY(-2px);
 
-  display: flex;
+    filter: brightness(1.08);
 
-  justify-content: center;
-
-  align-items: center;
-
-  gap: 7px;
-
-  margin-top: 22px;
-
-  color: #625d6b;
-
-  font-size: 10px;
+    box-shadow:
+        0 17px 45px rgba(105, 33, 226, 0.38),
+        0 0 30px rgba(116, 39, 240, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
 
-.secure-dot {
-
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-
-  background: var(--green);
-
-  box-shadow:
-    0 0 9px
-    rgba(74,222,128,.7);
+.titan-login-button:hover::before {
+    transform: translateX(120%);
 }
 
 
-.auth-page-footer {
-
-  margin-top: 20px;
-
-  color: #4f4a58;
-
-  font-size: 9px;
-
-  display: flex;
-
-  gap: 8px;
+.titan-login-button:active {
+    transform: translateY(0);
 }
 
 
-/* =========================================
-   RESPONSIVE LOGIN
-========================================= */
+.titan-button-text {
+    position: absolute;
 
-@media (max-width: 480px) {
+    left: 50%;
+    top: 50%;
 
-  .auth-card {
+    transform: translate(-50%, -50%);
 
-    padding: 28px 22px;
+    font-size: 16px;
 
-    border-radius: 20px;
-  }
+    font-weight: 600;
+}
 
-  .auth-heading {
 
-    margin-top: 32px;
-  }
+.titan-button-arrow {
+    position: absolute;
 
-  .auth-options {
+    left: 22px;
+    top: 50%;
+
+    width: 24px;
+    height: 24px;
+
+    transform:
+        translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.titan-button-arrow svg {
+    width: 22px;
+    height: 22px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.titan-button-loader {
+    display: none;
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 21px;
+    height: 21px;
+
+    margin:
+        -10.5px
+        0
+        0
+        -10.5px;
+
+    border-radius: 50%;
+
+    border:
+        2px solid rgba(255, 255, 255, 0.35);
+
+    border-top-color: #fff;
+
+    animation:
+        titan-spin 0.75s linear infinite;
+}
+
+
+.titan-login-button.is-loading .titan-button-text,
+.titan-login-button.is-loading .titan-button-arrow {
+    opacity: 0;
+}
+
+
+.titan-login-button.is-loading .titan-button-loader {
+    display: block;
+}
+
+
+@keyframes titan-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ================================================================
+   ERROR
+   ================================================================ */
+
+.titan-login-error {
+    margin-top: 15px;
+
+    padding: 12px 15px;
+
+    border-radius: 10px;
+
+    border:
+        1px solid rgba(255, 80, 100, 0.22);
+
+    background:
+        rgba(255, 50, 80, 0.06);
+
+    color: #ff9ba9;
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* ================================================================
+   QUICK ACCESS
+   ================================================================ */
+
+.titan-quick-access {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 42px;
+}
+
+
+.titan-section-divider {
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    margin-bottom: 20px;
+}
+
+
+.titan-section-divider span {
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.08)
+        );
+}
+
+
+.titan-section-divider span:last-child {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.08),
+            transparent
+        );
+}
+
+
+.titan-section-divider strong {
+    flex: none;
+
+    color: #827c89;
+
+    font-size: 13px;
+
+    font-weight: 500;
+}
+
+
+.titan-quick-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 13px;
+}
+
+
+.titan-quick-card {
+    min-height: 88px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.065);
+
+    background:
+        rgba(255, 255, 255, 0.015);
+
+    transition:
+        border-color 0.22s ease,
+        background 0.22s ease,
+        transform 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+
+.titan-quick-card:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(126, 51, 255, 0.35);
+
+    background:
+        rgba(110, 36, 230, 0.045);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+
+.titan-quick-icon {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #8f42ff;
+
+    background:
+        rgba(121, 45, 244, 0.08);
+
+    border:
+        1px solid rgba(133, 54, 255, 0.12);
+
+    filter:
+        drop-shadow(
+            0 0 8px rgba(127, 47, 255, 0.25)
+        );
+}
+
+
+.titan-quick-icon svg {
+    width: 23px;
+    height: 23px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.7;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.titan-quick-content {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.titan-quick-content strong {
+    color: #e8e4ee;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.titan-quick-content span {
+    color: #67616f;
 
     font-size: 10px;
-  }
+
+    line-height: 1.7;
+
+    white-space: nowrap;
+}
+
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+
+.titan-login-footer {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 36px;
+
+    color: #4e4a55;
+
+    font-size: 10px;
+}
+
+
+.titan-login-footer span:first-child {
+    color: #696370;
+}
+
+
+/* ================================================================
+   HERO
+   ================================================================ */
+
+.titan-hero {
+    position: relative;
+
+    min-width: 0;
+    height: min(780px, 80vh);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: visible;
+}
+
+
+.titan-hero-scene {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 650px;
+
+    overflow: hidden;
+
+    border-radius: 40px;
+}
+
+
+.titan-hero-scene::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            ellipse at 52% 48%,
+            rgba(106, 36, 226, 0.15),
+            transparent 45%
+        );
+
+    pointer-events: none;
+}
+
+
+/* ================================================================
+   TUNNEL
+   ================================================================ */
+
+.titan-tunnel {
+    position: absolute;
+
+    inset: 0;
+
+    perspective: 900px;
+
+    transform-style: preserve-3d;
+
+    opacity: 0.85;
+}
+
+
+.tunnel-frame {
+    position: absolute;
+
+    left: 50%;
+    top: 45%;
+
+    width: 48%;
+    height: 42%;
+
+    transform:
+        translate(-50%, -50%)
+        rotateX(2deg);
+
+    border:
+        1px solid rgba(129, 44, 255, 0.32);
+
+    box-shadow:
+        0 0 18px rgba(109, 30, 238, 0.13),
+        inset 0 0 20px rgba(101, 26, 224, 0.08);
+}
+
+
+.frame-1 {
+    width: 42%;
+    height: 34%;
+}
+
+
+.frame-2 {
+    width: 56%;
+    height: 46%;
+
+    opacity: 0.65;
+}
+
+
+.frame-3 {
+    width: 72%;
+    height: 60%;
+
+    opacity: 0.42;
+}
+
+
+.frame-4 {
+    width: 92%;
+    height: 78%;
+
+    opacity: 0.22;
+}
+
+
+.tunnel-line {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 1px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(130, 48, 255, 0.42),
+            transparent
+        );
+
+    transform-origin: center;
+
+    opacity: 0.35;
+}
+
+
+.line-1 {
+    transform:
+        translate(-50%, -50%)
+        rotate(15deg);
+}
+
+
+.line-2 {
+    transform:
+        translate(-50%, -50%)
+        rotate(-15deg);
+}
+
+
+.line-3 {
+    transform:
+        translate(-50%, -50%)
+        rotate(34deg);
+}
+
+
+.line-4 {
+    transform:
+        translate(-50%, -50%)
+        rotate(-34deg);
+}
+
+
+.line-5 {
+    transform:
+        translate(-50%, -50%)
+        rotate(55deg);
+}
+
+
+.line-6 {
+    transform:
+        translate(-50%, -50%)
+        rotate(-55deg);
+}
+
+
+/* ================================================================
+   HERO CUBE
+   ================================================================ */
+
+.titan-hero-logo {
+    position: absolute;
+
+    left: 50%;
+    top: 43%;
+
+    width: min(510px, 66%);
+
+    transform:
+        translate(-50%, -50%);
+
+    z-index: 5;
+
+    animation:
+        titan-floating-cube 5s ease-in-out infinite;
+}
+
+
+.titan-cube {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    overflow: visible;
+
+    filter:
+        drop-shadow(
+            0 0 18px rgba(119, 42, 255, 0.70)
+        )
+        drop-shadow(
+            0 35px 55px rgba(84, 20, 190, 0.34)
+        );
+}
+
+
+.titan-cube-glow {
+    position: absolute;
+
+    left: 50%;
+    top: 55%;
+
+    width: 50%;
+    height: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        rgba(111, 39, 239, 0.25);
+
+    filter: blur(65px);
+
+    z-index: -1;
+}
+
+
+@keyframes titan-floating-cube {
+
+    0%,
+    100% {
+        transform:
+            translate(-50%, -50%)
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translate(-50%, -50%)
+            translateY(-12px);
+    }
+
+}
+
+
+/* ================================================================
+   FLOOR
+   ================================================================ */
+
+.titan-floor {
+    position: absolute;
+
+    left: 50%;
+    bottom: 4%;
+
+    width: 90%;
+    height: 42%;
+
+    transform:
+        translateX(-50%)
+        perspective(500px)
+        rotateX(62deg);
+
+    transform-origin: center bottom;
+
+    z-index: 2;
+}
+
+
+.titan-floor-core {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 23%;
+    height: 17%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(171, 90, 255, 0.95) 0%,
+            rgba(119, 39, 241, 0.62) 25%,
+            rgba(78, 23, 171, 0.12) 62%,
+            transparent 76%
+        );
+
+    filter: blur(3px);
+
+    box-shadow:
+        0 0 55px rgba(126, 46, 245, 0.75);
+}
+
+
+.titan-floor-ring {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(132, 51, 255, 0.38);
+
+    box-shadow:
+        0 0 12px rgba(117, 39, 236, 0.17);
+}
+
+
+.ring-1 {
+    width: 25%;
+    height: 20%;
+}
+
+
+.ring-2 {
+    width: 43%;
+    height: 34%;
+
+    border-color:
+        rgba(132, 51, 255, 0.28);
+}
+
+
+.ring-3 {
+    width: 65%;
+    height: 51%;
+
+    border-color:
+        rgba(132, 51, 255, 0.22);
+}
+
+
+.ring-4 {
+    width: 91%;
+    height: 72%;
+
+    border-color:
+        rgba(132, 51, 255, 0.15);
+}
+
+
+.titan-floor-grid {
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 50%;
+
+    background-image:
+        linear-gradient(
+            rgba(127, 43, 250, 0.18) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(127, 43, 250, 0.18) 1px,
+            transparent 1px
+        );
+
+    background-size: 32px 32px;
+
+    mask-image:
+        radial-gradient(
+            ellipse,
+            black 15%,
+            transparent 73%
+        );
+
+    opacity: 0.65;
+}
+
+
+.titan-hero-light {
+    position: absolute;
+
+    left: 50%;
+    bottom: 14%;
+
+    width: 45%;
+    height: 24%;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(119, 42, 241, 0.34),
+            transparent 70%
+        );
+
+    filter: blur(35px);
+
+    z-index: 1;
+}
+
+
+/* ================================================================
+   RESPONSIVE — LARGE TABLET
+   ================================================================ */
+
+@media (max-width: 1250px) {
+
+    .titan-login {
+        grid-template-columns:
+            minmax(400px, 0.9fr)
+            minmax(470px, 1.1fr);
+
+        padding-left: 45px;
+        padding-right: 45px;
+
+        gap: 35px;
+    }
+
+    .titan-login-panel-inner {
+        padding:
+            45px
+            40px
+            35px;
+    }
+
+    .titan-hero {
+        height: 720px;
+    }
+
+}
+
+
+/* ================================================================
+   TABLET
+   ================================================================ */
+
+@media (max-width: 1000px) {
+
+    .titan-login {
+        grid-template-columns: 1fr;
+
+        padding:
+            45px
+            30px;
+
+        gap: 25px;
+    }
+
+    .titan-login-panel {
+        max-width: 620px;
+
+        order: 1;
+    }
+
+    .titan-hero {
+        order: 2;
+
+        width: 100%;
+        height: 620px;
+
+        max-width: 750px;
+
+        margin: 0 auto;
+    }
+
+}
+
+
+/* ================================================================
+   MOBILE
+   ================================================================ */
+
+@media (max-width: 650px) {
+
+    body {
+        min-height: 100svh;
+    }
+
+
+    .titan-login {
+        min-height: 100svh;
+
+        padding:
+            22px
+            16px
+            35px;
+
+        gap: 20px;
+    }
+
+
+    .titan-login-panel {
+        border-radius: 22px;
+    }
+
+
+    .titan-login-panel-inner {
+        border-radius: 21px;
+
+        padding:
+            32px
+            20px
+            28px;
+    }
+
+
+    .titan-brand {
+        margin-bottom: 25px;
+
+        gap: 10px;
+    }
+
+
+    .titan-brand-mark {
+        width: 45px;
+        height: 45px;
+    }
+
+
+    .titan-brand-name {
+        font-size: 34px;
+    }
+
+
+    .titan-login-heading {
+        margin-bottom: 28px;
+    }
+
+
+    .titan-login-heading h1 {
+        font-size: 23px;
+
+        line-height: 1.8;
+    }
+
+
+    .titan-login-heading p {
+        font-size: 12px;
+
+        line-height: 2;
+    }
+
+
+    .titan-input-wrapper,
+    .titan-login-button {
+        height: 60px;
+    }
+
+
+    .titan-quick-access {
+        margin-top: 32px;
+    }
+
+
+    .titan-quick-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .titan-quick-card {
+        min-height: 76px;
+    }
+
+
+    .titan-login-footer {
+        flex-wrap: wrap;
+
+        margin-top: 28px;
+    }
+
+
+    .titan-hero {
+        display: none;
+    }
+
+}
+
+
+/* ================================================================
+   SMALL MOBILE
+   ================================================================ */
+
+@media (max-width: 390px) {
+
+    .titan-login {
+        padding:
+            15px
+            12px
+            25px;
+    }
+
+
+    .titan-login-panel-inner {
+        padding:
+            27px
+            16px
+            24px;
+    }
+
+
+    .titan-login-heading h1 {
+        font-size: 21px;
+    }
+
+
+    .titan-login-heading p {
+        font-size: 11px;
+    }
+
+
+    .titan-brand-name {
+        font-size: 30px;
+    }
+
+
+    .titan-brand-mark {
+        width: 40px;
+        height: 40px;
+    }
+
+
+    .titan-quick-content span {
+        white-space: normal;
+    }
+
+}
+
+
+/* ================================================================
+   REDUCED MOTION
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
 
 }
