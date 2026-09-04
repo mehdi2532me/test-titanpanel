@@ -2,754 +2,696 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <meta name="theme-color" content="#030306">
+    <meta name="theme-color" content="#030207">
     <meta name="color-scheme" content="dark">
 
     <title>TiTaN — ورود</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', path='css/titan-ui.css') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', path='css/titan-ui.css') }}">
 </head>
 
 <body class="titan-login-page">
 
-    <!-- =========================================================
-         BACKGROUND
-    ========================================================== -->
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
 
-    <div class="titan-background">
+<div class="titan-background">
 
-        <div class="titan-bg-grid"></div>
+    <div class="titan-bg-glow titan-bg-glow-1"></div>
+    <div class="titan-bg-glow titan-bg-glow-2"></div>
 
-        <div class="titan-bg-glow titan-bg-glow-1"></div>
-        <div class="titan-bg-glow titan-bg-glow-2"></div>
+    <div class="titan-bg-grid"></div>
 
-        <div class="titan-particles">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
+    <div class="titan-particles">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
 
+</div>
 
-    <!-- =========================================================
-         MAIN
-    ========================================================== -->
 
-    <main class="titan-login">
+<!-- =========================================================
+     MAIN
+========================================================= -->
 
-        <!-- =====================================================
-             LEFT SIDE — LOGIN CARD
-        ====================================================== -->
+<main class="titan-login">
 
-        <section class="titan-login-panel">
+    <!-- =====================================================
+         LOGIN
+    ====================================================== -->
 
-            <div class="titan-login-panel-inner">
+    <section class="titan-login-panel">
 
-                <!-- Brand -->
+        <div class="titan-login-panel-inner">
 
-                <div class="titan-brand">
+            <!-- BRAND -->
 
-                    <div class="titan-brand-mark">
-                        <svg viewBox="0 0 100 100"
-                             aria-hidden="true">
+            <div class="titan-brand">
 
-                            <defs>
-                                <linearGradient id="logoGradient"
-                                                x1="0%"
-                                                y1="0%"
-                                                x2="100%"
-                                                y2="100%">
-                                    <stop offset="0%"
-                                          stop-color="#8b35ff"/>
-                                    <stop offset="50%"
-                                          stop-color="#6d20ff"/>
-                                    <stop offset="100%"
-                                          stop-color="#a86cff"/>
-                                </linearGradient>
-                            </defs>
+                <div class="titan-brand-mark">
 
-                            <path
-                                d="M50 5
-                                   L89 27
-                                   L89 73
-                                   L50 95
-                                   L11 73
-                                   L11 27
-                                   Z"
-                                fill="none"
-                                stroke="url(#logoGradient)"
-                                stroke-width="6"/>
-
-                            <path
-                                d="M50 22
-                                   L73 35
-                                   L73 62
-                                   L50 76
-                                   L27 62
-                                   L27 35
-                                   Z"
-                                fill="none"
-                                stroke="url(#logoGradient)"
-                                stroke-width="5"/>
-
-                            <path
-                                d="M50 22 V76"
-                                stroke="url(#logoGradient)"
-                                stroke-width="5"/>
-
-                        </svg>
-                    </div>
-
-                    <div class="titan-brand-name">
-                        <span class="titan-brand-ti">Ti</span><span>TaN</span>
-                    </div>
-
-                </div>
-
-
-                <!-- Heading -->
-
-                <div class="titan-login-heading">
-
-                    <h1>
-                        به <span>TiTaN</span> خوش آمدید
-                    </h1>
-
-                    <p>
-                        برای ورود به پنل، نام کاربری خود را وارد کنید
-                    </p>
-
-                </div>
-
-
-                <!-- Login Form -->
-
-                <form
-                    id="titanLoginForm"
-                    class="titan-login-form"
-                    method="POST"
-                    action="/api/login"
-                    autocomplete="on"
-                >
-
-                    <div class="titan-field">
-
-                        <label for="username">
-                            نام کاربری
-                        </label>
-
-                        <div class="titan-input-wrapper">
-
-                            <span class="titan-input-icon">
-
-                                <svg viewBox="0 0 24 24"
-                                     aria-hidden="true">
-
-                                    <path
-                                        d="M20 21
-                                           C20 17.7 17.3 15 14 15
-                                           H10
-                                           C6.7 15 4 17.7 4 21"/>
-
-                                    <circle cx="12"
-                                            cy="7"
-                                            r="4"/>
-
-                                </svg>
-
-                            </span>
-
-                            <input
-                                id="username"
-                                name="username"
-                                type="text"
-                                placeholder="نام کاربری"
-                                autocomplete="username"
-                                required
-                                spellcheck="false"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Login button -->
-
-                    <button
-                        type="submit"
-                        class="titan-login-button"
-                        id="titanLoginButton"
-                    >
-
-                        <span class="titan-button-text">
-                            ورود
-                        </span>
-
-                        <span class="titan-button-arrow">
-                            <svg viewBox="0 0 24 24"
-                                 aria-hidden="true">
-                                <path d="M19 12H5"/>
-                                <path d="M12 19L5 12L12 5"/>
-                            </svg>
-                        </span>
-
-                        <span class="titan-button-loader"
-                              aria-hidden="true"></span>
-
-                    </button>
-
-                </form>
-
-
-                <!-- Error -->
-
-                <div
-                    id="titanLoginError"
-                    class="titan-login-error"
-                    role="alert"
-                    hidden
-                ></div>
-
-
-                <!-- Quick Access -->
-
-                <div class="titan-quick-access">
-
-                    <div class="titan-section-divider">
-
-                        <span></span>
-
-                        <strong>
-                            دسترسی سریع
-                        </strong>
-
-                        <span></span>
-
-                    </div>
-
-
-                    <div class="titan-quick-grid">
-
-                        <!-- Support -->
-
-                        <a
-                            href="#"
-                            class="titan-quick-card"
-                            id="titanSupportLink"
-                        >
-
-                            <div class="titan-quick-icon">
-
-                                <svg viewBox="0 0 24 24"
-                                     aria-hidden="true">
-
-                                    <path
-                                        d="M4 13
-                                           V11
-                                           A8 8 0 0 1 20 11
-                                           V13"/>
-
-                                    <path
-                                        d="M4 13
-                                           A2 2 0 0 0 6 15
-                                           H7
-                                           V11
-                                           H6
-                                           A2 2 0 0 0 4 13Z"/>
-
-                                    <path
-                                        d="M20 13
-                                           A2 2 0 0 1 18 15
-                                           H17
-                                           V11
-                                           H18
-                                           A2 2 0 0 1 20 13Z"/>
-
-                                    <path
-                                        d="M17 17
-                                           C16 19 14 20 12 20
-                                           H10"/>
-
-                                </svg>
-
-                            </div>
-
-                            <div class="titan-quick-content">
-
-                                <strong>
-                                    پشتیبانی
-                                </strong>
-
-                                <span>
-                                    با تیم پشتیبانی در ارتباط باشید
-                                </span>
-
-                            </div>
-
-                        </a>
-
-
-                        <!-- Telegram -->
-
-                        <a
-                            href="#"
-                            class="titan-quick-card"
-                            id="titanTelegramLink"
-                        >
-
-                            <div class="titan-quick-icon">
-
-                                <svg viewBox="0 0 24 24"
-                                     aria-hidden="true">
-
-                                    <path
-                                        d="M21 4
-                                           L18 20
-                                           L13 16
-                                           L10 19
-                                           V14
-                                           L18 7
-                                           L7 14
-                                           L3 12
-                                           Z"/>
-
-                                </svg>
-
-                            </div>
-
-                            <div class="titan-quick-content">
-
-                                <strong>
-                                    چنل تلگرام
-                                </strong>
-
-                                <span>
-                                    به کانال رسمی ما بپیوندید
-                                </span>
-
-                            </div>
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Footer -->
-
-                <footer class="titan-login-footer">
-
-                    <span>
-                        TiTaN
-                    </span>
-
-                    <span>
-                        © 2024
-                    </span>
-
-                    <span>
-                        تمامی حقوق محفوظ است
-                    </span>
-
-                </footer>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             RIGHT SIDE — HERO
-        ====================================================== -->
-
-        <section class="titan-hero">
-
-            <div class="titan-hero-scene">
-
-                <!-- Tunnel -->
-
-                <div class="titan-tunnel">
-
-                    <div class="tunnel-line line-1"></div>
-                    <div class="tunnel-line line-2"></div>
-                    <div class="tunnel-line line-3"></div>
-                    <div class="tunnel-line line-4"></div>
-                    <div class="tunnel-line line-5"></div>
-                    <div class="tunnel-line line-6"></div>
-
-                    <div class="tunnel-frame frame-1"></div>
-                    <div class="tunnel-frame frame-2"></div>
-                    <div class="tunnel-frame frame-3"></div>
-                    <div class="tunnel-frame frame-4"></div>
-
-                </div>
-
-
-                <!-- Large TiTaN Cube -->
-
-                <div class="titan-hero-logo">
-
-                    <div class="titan-cube-glow"></div>
-
-                    <svg
-                        class="titan-cube"
-                        viewBox="0 0 500 560"
-                        aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
 
                         <defs>
-
                             <linearGradient
-                                id="cubeTop"
+                                id="logoGradient"
                                 x1="0%"
                                 y1="0%"
                                 x2="100%"
-                                y2="100%"
-                            >
-                                <stop offset="0%"
-                                      stop-color="#a25cff"/>
-                                <stop offset="100%"
-                                      stop-color="#4f0dca"/>
+                                y2="100%">
+
+                                <stop offset="0%" stop-color="#a65cff"/>
+                                <stop offset="50%" stop-color="#7027f2"/>
+                                <stop offset="100%" stop-color="#c18aff"/>
+
                             </linearGradient>
-
-                            <linearGradient
-                                id="cubeLeft"
-                                x1="0%"
-                                y1="0%"
-                                x2="100%"
-                                y2="100%"
-                            >
-                                <stop offset="0%"
-                                      stop-color="#7624f5"/>
-                                <stop offset="100%"
-                                      stop-color="#25005e"/>
-                            </linearGradient>
-
-                            <linearGradient
-                                id="cubeRight"
-                                x1="0%"
-                                y1="0%"
-                                x2="100%"
-                                y2="100%"
-                            >
-                                <stop offset="0%"
-                                      stop-color="#913fff"/>
-                                <stop offset="100%"
-                                      stop-color="#36007d"/>
-                            </linearGradient>
-
-                            <filter
-                                id="cubeGlow"
-                                x="-100%"
-                                y="-100%"
-                                width="300%"
-                                height="300%"
-                            >
-                                <feGaussianBlur
-                                    stdDeviation="12"
-                                    result="blur"/>
-                                <feMerge>
-                                    <feMergeNode in="blur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-
                         </defs>
 
-
-                        <!-- Top -->
-
-                        <polygon
-                            points="250,45 420,135 250,225 80,135"
-                            fill="url(#cubeTop)"
-                            stroke="#a96cff"
-                            stroke-width="5"
-                            filter="url(#cubeGlow)"
-                        />
-
-
-                        <!-- Left -->
-
-                        <polygon
-                            points="80,135 250,225 250,440 80,350"
-                            fill="url(#cubeLeft)"
-                            stroke="#8e3fff"
-                            stroke-width="5"
-                        />
-
-
-                        <!-- Right -->
-
-                        <polygon
-                            points="250,225 420,135 420,350 250,440"
-                            fill="url(#cubeRight)"
-                            stroke="#a65bff"
-                            stroke-width="5"
-                        />
-
-
-                        <!-- Inner left -->
-
-                        <polygon
-                            points="126,160 215,207 215,365 126,318"
+                        <path
+                            d="M50 5
+                               L89 27
+                               L89 73
+                               L50 95
+                               L11 73
+                               L11 27
+                               Z"
                             fill="none"
-                            stroke="#b477ff"
-                            stroke-width="8"
-                        />
-
-
-                        <!-- Inner right -->
-
-                        <polygon
-                            points="285,207 374,160 374,318 285,365"
-                            fill="none"
-                            stroke="#b477ff"
-                            stroke-width="8"
-                        />
-
-
-                        <!-- Center -->
+                            stroke="url(#logoGradient)"
+                            stroke-width="6"/>
 
                         <path
-                            d="M250 225
-                               V440"
-                            stroke="#c188ff"
-                            stroke-width="8"
-                        />
+                            d="M50 22
+                               L73 35
+                               L73 62
+                               L50 76
+                               L27 62
+                               L27 35
+                               Z"
+                            fill="none"
+                            stroke="url(#logoGradient)"
+                            stroke-width="5"/>
+
+                        <path
+                            d="M50 22 V76"
+                            stroke="url(#logoGradient)"
+                            stroke-width="5"/>
 
                     </svg>
 
                 </div>
 
+                <div class="titan-brand-name">
+                    <span class="titan-brand-ti">Ti</span>TaN
+                </div>
 
-                <!-- Floor -->
+            </div>
 
-                <div class="titan-floor">
 
-                    <div class="titan-floor-core"></div>
+            <!-- HEADING -->
 
-                    <div class="titan-floor-ring ring-1"></div>
-                    <div class="titan-floor-ring ring-2"></div>
-                    <div class="titan-floor-ring ring-3"></div>
-                    <div class="titan-floor-ring ring-4"></div>
+            <div class="titan-login-heading">
 
-                    <div class="titan-floor-grid"></div>
+                <h1>
+                    به <span>TiTaN</span> خوش آمدید
+                </h1>
+
+                <p>
+                    برای ورود به پنل، نام کاربری خود را وارد کنید
+                </p>
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+
+            <form
+                id="titanLoginForm"
+                class="titan-login-form"
+                method="POST"
+                action="/api/login"
+                autocomplete="on">
+
+                <div class="titan-field">
+
+                    <label for="username">
+                        نام کاربری
+                    </label>
+
+                    <div class="titan-input-wrapper">
+
+                        <span class="titan-input-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                 aria-hidden="true">
+
+                                <circle
+                                    cx="12"
+                                    cy="7"
+                                    r="4"/>
+
+                                <path
+                                    d="M20 21
+                                       C20 17.7 17.3 15 14 15
+                                       H10
+                                       C6.7 15 4 17.7 4 21"/>
+
+                            </svg>
+
+                        </span>
+
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            placeholder="نام کاربری"
+                            autocomplete="username"
+                            required
+                            spellcheck="false">
+
+                    </div>
 
                 </div>
 
 
-                <!-- Light -->
+                <!-- LOGIN BUTTON -->
 
-                <div class="titan-hero-light"></div>
+                <button
+                    type="submit"
+                    class="titan-login-button"
+                    id="titanLoginButton">
+
+                    <span class="titan-button-text">
+                        ورود
+                    </span>
+
+                    <span class="titan-button-arrow">
+
+                        <svg viewBox="0 0 24 24"
+                             aria-hidden="true">
+
+                            <path d="M19 12H5"/>
+                            <path d="M12 19L5 12L12 5"/>
+
+                        </svg>
+
+                    </span>
+
+                    <span
+                        class="titan-button-loader"
+                        aria-hidden="true">
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <!-- ERROR -->
+
+            <div
+                id="titanLoginError"
+                class="titan-login-error"
+                role="alert"
+                hidden>
+            </div>
+
+
+            <!-- QUICK ACCESS -->
+
+            <div class="titan-quick-access">
+
+                <div class="titan-section-divider">
+
+                    <span></span>
+
+                    <strong>
+                        دسترسی سریع
+                    </strong>
+
+                    <span></span>
+
+                </div>
+
+
+                <div class="titan-quick-grid">
+
+                    <!-- SUPPORT -->
+
+                    <a
+                        href="#"
+                        class="titan-quick-card"
+                        id="titanSupportLink">
+
+                        <div class="titan-quick-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                 aria-hidden="true">
+
+                                <path
+                                    d="M4 13
+                                       V11
+                                       A8 8 0 0 1 20 11
+                                       V13"/>
+
+                                <path
+                                    d="M4 13
+                                       A2 2 0 0 0 6 15
+                                       H7
+                                       V11
+                                       H6
+                                       A2 2 0 0 0 4 13Z"/>
+
+                                <path
+                                    d="M20 13
+                                       A2 2 0 0 1 18 15
+                                       H17
+                                       V11
+                                       H18
+                                       A2 2 0 0 1 20 13Z"/>
+
+                                <path
+                                    d="M17 17
+                                       C16 19 14 20 12 20
+                                       H10"/>
+
+                            </svg>
+
+                        </div>
+
+                        <div class="titan-quick-content">
+
+                            <strong>
+                                پشتیبانی
+                            </strong>
+
+                            <span>
+                                با تیم پشتیبانی در ارتباط باشید
+                            </span>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- TELEGRAM -->
+
+                    <a
+                        href="#"
+                        class="titan-quick-card"
+                        id="titanTelegramLink">
+
+                        <div class="titan-quick-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                 aria-hidden="true">
+
+                                <path
+                                    d="M21 4
+                                       L18 20
+                                       L13 16
+                                       L10 19
+                                       V14
+                                       L18 7
+                                       L7 14
+                                       L3 12
+                                       Z"/>
+
+                            </svg>
+
+                        </div>
+
+                        <div class="titan-quick-content">
+
+                            <strong>
+                                چنل تلگرام
+                            </strong>
+
+                            <span>
+                                به کانال رسمی ما بپیوندید
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                </div>
 
             </div>
 
-        </section>
 
-    </main>
+            <!-- FOOTER -->
 
+            <footer class="titan-login-footer">
 
-    <!-- =========================================================
-         OPTIONAL EXISTING LOGIN CONFIG
-         این مقادیر را در صورت وجود، با تنظیمات فعلی پروژه نگه دار
-    ========================================================== -->
+                <span>TiTaN</span>
+                <span>© 2024</span>
+                <span>تمامی حقوق محفوظ است</span>
 
-    <script>
-        /*
-         * =========================================================
-         * TiTaN UI
-         * =========================================================
-         *
-         * این بخش فقط رفتار ظاهری UI را کنترل می‌کند.
-         *
-         * اگر پروژه فعلی login handler دارد:
-         * آن handler را حذف نکن و فقط UI را به آن متصل کن.
-         *
-         * =========================================================
-         */
+            </footer>
 
-        (() => {
+        </div>
 
-            const form = document.getElementById("titanLoginForm");
-            const button = document.getElementById("titanLoginButton");
-            const errorBox = document.getElementById("titanLoginError");
-
-            if (!form) return;
+    </section>
 
 
-            function setLoading(state) {
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
-                if (state) {
-                    button.classList.add("is-loading");
-                    button.disabled = true;
-                } else {
-                    button.classList.remove("is-loading");
-                    button.disabled = false;
-                }
+    <section class="titan-hero">
 
-            }
+        <div class="titan-hero-scene">
 
+            <!-- TUNNEL -->
 
-            function showError(message) {
+            <div class="titan-tunnel">
 
-                if (!errorBox) return;
+                <div class="tunnel-line line-1"></div>
+                <div class="tunnel-line line-2"></div>
+                <div class="tunnel-line line-3"></div>
+                <div class="tunnel-line line-4"></div>
+                <div class="tunnel-line line-5"></div>
+                <div class="tunnel-line line-6"></div>
 
-                errorBox.textContent = message;
-                errorBox.hidden = false;
+                <div class="tunnel-frame frame-1"></div>
+                <div class="tunnel-frame frame-2"></div>
+                <div class="tunnel-frame frame-3"></div>
+                <div class="tunnel-frame frame-4"></div>
 
-            }
-
-
-            function hideError() {
-
-                if (!errorBox) return;
-
-                errorBox.hidden = true;
-                errorBox.textContent = "";
-
-            }
+            </div>
 
 
-            /*
-             * اگر login فعلی پروژه از submit معمولی استفاده می‌کند،
-             * این listener را می‌توان حذف کرد.
-             *
-             * اگر login فعلی با JS/API انجام می‌شود،
-             * منطق قبلی پروژه باید اینجا حفظ شود.
-             */
+            <!-- CUBE -->
 
-            form.addEventListener("submit", async (event) => {
+            <div class="titan-hero-logo">
 
-                /*
-                 * =================================================
-                 * IMPORTANT
-                 *
-                 * برای جلوگیری از خراب شدن Backend،
-                 * این قسمت را با login handler فعلی پروژه
-                 * هماهنگ کن.
-                 *
-                 * =================================================
-                 */
+                <div class="titan-cube-glow"></div>
 
-                if (form.dataset.nativeSubmit === "true") {
-                    return;
-                }
+                <svg
+                    class="titan-cube"
+                    viewBox="0 0 500 560"
+                    aria-hidden="true">
 
-                event.preventDefault();
+                    <defs>
 
-                hideError();
+                        <linearGradient
+                            id="cubeTop"
+                            x1="0%"
+                            y1="0%"
+                            x2="100%"
+                            y2="100%">
 
-                const username =
-                    document.getElementById("username")?.value.trim();
+                            <stop offset="0%" stop-color="#a25cff"/>
+                            <stop offset="100%" stop-color="#4f0dca"/>
 
-                if (!username) {
+                        </linearGradient>
 
-                    showError("لطفاً نام کاربری را وارد کنید.");
-                    return;
+                        <linearGradient
+                            id="cubeLeft"
+                            x1="0%"
+                            y1="0%"
+                            x2="100%"
+                            y2="100%">
 
-                }
+                            <stop offset="0%" stop-color="#7624f5"/>
+                            <stop offset="100%" stop-color="#25005e"/>
 
-                setLoading(true);
+                        </linearGradient>
 
-                /*
-                 * اگر API فعلی پروژه /api/login است، می‌توانی
-                 * این بخش را با payload واقعی Backend جایگزین کنی.
-                 */
+                        <linearGradient
+                            id="cubeRight"
+                            x1="0%"
+                            y1="0%"
+                            x2="100%"
+                            y2="100%">
 
-                try {
+                            <stop offset="0%" stop-color="#913fff"/>
+                            <stop offset="100%" stop-color="#36007d"/>
 
-                    const response = await fetch("/api/login", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: username
-                        })
-                    });
+                        </linearGradient>
 
-                    let data = {};
+                        <filter
+                            id="cubeGlow"
+                            x="-100%"
+                            y="-100%"
+                            width="300%"
+                            height="300%">
 
-                    try {
-                        data = await response.json();
-                    } catch (_) {}
+                            <feGaussianBlur
+                                stdDeviation="10"
+                                result="blur"/>
 
-                    if (!response.ok) {
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
 
-                        throw new Error(
-                            data.detail ||
-                            data.message ||
-                            "ورود انجام نشد."
-                        );
+                        </filter>
 
-                    }
+                    </defs>
 
-                    /*
-                     * رفتار موفقیت را از Backend فعلی پروژه بگیر.
-                     */
 
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    } else {
-                        window.location.href = "/";
-                    }
+                    <!-- TOP -->
 
-                } catch (error) {
+                    <polygon
+                        points="250,45 420,135 250,225 80,135"
+                        fill="url(#cubeTop)"
+                        stroke="#a96cff"
+                        stroke-width="5"
+                        filter="url(#cubeGlow)"/>
 
-                    showError(
-                        error?.message ||
-                        "خطایی هنگام ورود رخ داد."
-                    );
 
-                    setLoading(false);
+                    <!-- LEFT -->
 
-                }
+                    <polygon
+                        points="80,135 250,225 250,440 80,350"
+                        fill="url(#cubeLeft)"
+                        stroke="#8e3fff"
+                        stroke-width="5"/>
+
+
+                    <!-- RIGHT -->
+
+                    <polygon
+                        points="250,225 420,135 420,350 250,440"
+                        fill="url(#cubeRight)"
+                        stroke="#a65bff"
+                        stroke-width="5"/>
+
+
+                    <!-- INNER LEFT -->
+
+                    <polygon
+                        points="126,160 215,207 215,365 126,318"
+                        fill="none"
+                        stroke="#b477ff"
+                        stroke-width="8"/>
+
+
+                    <!-- INNER RIGHT -->
+
+                    <polygon
+                        points="285,207 374,160 374,318 285,365"
+                        fill="none"
+                        stroke="#b477ff"
+                        stroke-width="8"/>
+
+
+                    <!-- CENTER -->
+
+                    <path
+                        d="M250 225 V440"
+                        stroke="#c188ff"
+                        stroke-width="8"/>
+
+                </svg>
+
+            </div>
+
+
+            <!-- FLOOR -->
+
+            <div class="titan-floor">
+
+                <div class="titan-floor-core"></div>
+
+                <div class="titan-floor-ring ring-1"></div>
+                <div class="titan-floor-ring ring-2"></div>
+                <div class="titan-floor-ring ring-3"></div>
+                <div class="titan-floor-ring ring-4"></div>
+
+                <div class="titan-floor-grid"></div>
+
+            </div>
+
+
+            <div class="titan-hero-light"></div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================================================
+     LOGIN JAVASCRIPT
+========================================================= -->
+
+<script>
+(() => {
+
+    const form = document.getElementById("titanLoginForm");
+    const button = document.getElementById("titanLoginButton");
+    const errorBox = document.getElementById("titanLoginError");
+
+    if (!form) return;
+
+
+    function setLoading(state) {
+
+        if (!button) return;
+
+        button.classList.toggle("is-loading", state);
+        button.disabled = state;
+
+    }
+
+
+    function showError(message) {
+
+        if (!errorBox) return;
+
+        errorBox.textContent = message;
+        errorBox.hidden = false;
+
+    }
+
+
+    function hideError() {
+
+        if (!errorBox) return;
+
+        errorBox.hidden = true;
+        errorBox.textContent = "";
+
+    }
+
+
+    form.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        hideError();
+
+        const username =
+            document.getElementById("username")?.value.trim();
+
+
+        if (!username) {
+
+            showError("لطفاً نام کاربری را وارد کنید.");
+
+            return;
+        }
+
+
+        setLoading(true);
+
+
+        try {
+
+            const response = await fetch("/api/login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username
+                })
 
             });
 
 
-            /*
-             * Quick links
-             *
-             * لینک‌های واقعی پروژه را اینجا قرار بده.
-             */
+            let data = {};
 
-            const supportLink =
-                document.getElementById("titanSupportLink");
-
-            const telegramLink =
-                document.getElementById("titanTelegramLink");
+            try {
+                data = await response.json();
+            } catch (_) {
+                data = {};
+            }
 
 
-            /*
-             * مثال:
-             *
-             * supportLink.href = "/support";
-             * telegramLink.href = "https://t.me/...";
-             *
-             * لینک واقعی فعلی پروژه را جایگزین کن.
-             */
+            if (!response.ok) {
 
-        })();
-    </script>
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "ورود انجام نشد."
+                );
+
+            }
+
+
+            if (data.redirect) {
+
+                window.location.href = data.redirect;
+
+            } else {
+
+                window.location.href = "/";
+
+            }
+
+        } catch (error) {
+
+            showError(
+                error?.message ||
+                "خطایی هنگام ورود رخ داد."
+            );
+
+            setLoading(false);
+
+        }
+
+    });
+
+
+    /*
+     * لینک‌های فعلی پروژه را در صورت نیاز
+     * اینجا قرار بده.
+     *
+     * مثال:
+     *
+     * document.getElementById("titanSupportLink").href = "/support";
+     *
+     * document.getElementById("titanTelegramLink").href =
+     *     "https://t.me/your_channel";
+     */
+
+})();
+</script>
 
 </body>
 </html>
