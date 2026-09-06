@@ -190,150 +190,83 @@ window.UI = (() => {
     return `<div class="progress" style="margin-top:6px"><i class="${cls}" style="width:${pct}%"></i></div>`;
   }
 
-  // ---------------- chart ----------------
+  // ---------------- chart (pure SVG, v2 reference look) ----------------
+  function sampleIndices(n, k) {
+    k = Math.min(k, n);
+    if (n <= k) return Array.from({ length: n }, (_, i) => i);
+    const idx = new Set([0, n - 1]);
+    for (let i = 1; i < k - 1; i++) idx.add(Math.round((i * (n - 1)) / (k - 1)));
+    return Array.from(idx).sort((a, b) => a - b);
+  }
+
   function drawChart(container, data, opts = {}) {
-    // data: [{t, up, down}]; opts.colors {up, down}, opts.daily, opts.xlabels []
+    // data: [{t, up, down}] (oldest → newest); opts.daily, opts.xlabels[]
     const wrap = typeof container === 'string' ? document.querySelector(container) : container;
     if (!wrap) return;
+    const pts = (data || []).map(h => ({ t: h.t || 0, up: Number(h.up || 0), down: Number(h.down || 0) }));
     wrap._chartData = data;
     wrap._chartOpts = opts || {};
-    wrap.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    wrap.appendChild(canvas);
-    const tip = document.createElement('div');
-    tip.className = 'chart-tip';
-    wrap.appendChild(tip);
 
-    const dpr = window.devicePixelRatio || 1;
-    const W = wrap.clientWidth || 560, H = wrap.clientHeight || 240;
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
+    const PL = 45, PR = 590, TOP = 22, BOT = 210;
+    const n = Math.max(pts.length, 1);
+    const max = Math.max(1, ...pts.map(p => Math.max(p.up, p.down)));
+    const xAt = (i) => n === 1 ? (PL + PR) / 2 : PL + (PR - PL) * (i / (n - 1));
+    const yAt = (v) => TOP + (BOT - TOP) * (1 - v / max);
+    const line = (key) => pts.map((p, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)} ${yAt(p[key]).toFixed(1)}`).join(' ');
+    const upPath = line('up');
+    const downPath = line('down');
+    const upArea = `${upPath} L${xAt(n - 1).toFixed(1)} ${BOT} L${PL} ${BOT} Z`;
 
-    const P = 6, PB = 28;
-    const max = Math.max(1, ...data.map(h => Math.max(h.up || 0, h.down || 0)));
-    const colUp = (opts.colors && opts.colors.up) || '#a548ff';
-    const colDown = (opts.colors && opts.colors.down) || '#c79aff';
-    const css = getComputedStyle(document.documentElement);
-    const gridCol = css.getPropertyValue('--border').trim() || 'rgba(120,140,170,0.13)';
-    const textCol = css.getPropertyValue('--text-3').trim() || '#6e7a8e';
+    const grid = [22, 69, 116, 163, 210].map(y =>
+      `<line x1="${PL}" y1="${y}" x2="${PR}" y2="${y}" stroke="#263246" stroke-opacity=".55"/>`).join('');
 
-    ctx.clearRect(0, 0, W, H);
+    const dots = sampleIndices(n, 7).map(i =>
+      `<circle cx="${xAt(i).toFixed(1)}" cy="${yAt(pts[i].up).toFixed(1)}" r="4" fill="#cb78ff"/>`).join('');
 
-    const stepX = data.length > 1 ? (W - P * 2) / (data.length - 1) : 0;
-    const plotH = H - P - PB;
-
-    // grid lines + Y labels
-    ctx.strokeStyle = gridCol; ctx.lineWidth = 1;
-    ctx.fillStyle = textCol; ctx.font = '10px Vazirmatn, Tahoma';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-    for (let i = 0; i <= 3; i++) {
-      const y = P + (plotH * i) / 3;
-      ctx.beginPath(); ctx.moveTo(P, y); ctx.lineTo(W - P, y); ctx.stroke();
-      ctx.fillText(fmtBytes(max * (1 - i / 3)), P + 3, y - 1);
-    }
-
-    const xAt = (i) => P + i * stepX;
-    const yAt = (v) => P + plotH - (v / max) * plotH;
-
-    // gradient area fill (under the upload series — reference look)
-    const areaGrad = ctx.createLinearGradient(0, P, 0, H - PB);
-    areaGrad.addColorStop(0, 'rgba(169, 65, 255, .50)');
-    areaGrad.addColorStop(1, 'rgba(124, 42, 255, .02)');
-
-    const buildPath = (key) => {
-      const pts = data.map((h, i) => [xAt(i), yAt(h[key] || 0)]);
-      return pts;
-    };
-
-    // area under 'up'
-    const upPts = buildPath('up');
-    ctx.beginPath();
-    upPts.forEach((p, i) => { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
-    ctx.lineTo(upPts[upPts.length - 1][0], H - PB);
-    ctx.lineTo(P, H - PB);
-    ctx.closePath();
-    ctx.fillStyle = areaGrad;
-    ctx.fill();
-
-    // download line (lighter)
-    ctx.beginPath();
-    buildPath('down').forEach((p, i) => { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
-    ctx.strokeStyle = colDown; ctx.lineWidth = 1.8; ctx.lineJoin = 'round';
-    ctx.stroke();
-
-    // upload line (primary, glow)
-    ctx.save();
-    ctx.shadowColor = 'rgba(176, 80, 255, .4)';
-    ctx.shadowBlur = 6;
-    ctx.beginPath();
-    upPts.forEach((p, i) => { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
-    ctx.strokeStyle = colUp; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
-    ctx.stroke();
-    ctx.restore();
-
-    // points on upload line
-    ctx.fillStyle = '#cf7dff';
-    ctx.strokeStyle = '#e8b6ff';
-    ctx.lineWidth = .5;
-    upPts.forEach((p, i) => {
-      if (i === 0 || i === upPts.length - 1 || i % 2 === 0) {
-        ctx.beginPath();
-        ctx.arc(p[0], p[1], 3.2, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
+    const makeLabel = (i) => {
+      if (opts.xlabels && opts.xlabels[i] != null) return opts.xlabels[i];
+      const d = new Date(pts[i].t * 1000);
+      if (opts.daily) {
+        const ago = n - 1 - i;
+        if (n <= 7) return ago === 0 ? I18N.t('today') : I18N.t('days_ago', { n: ago });
+        return d.toLocaleDateString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric' });
       }
-    });
-
-    // x labels
-    ctx.textAlign = 'center';
-    if (data.length) {
-      const lblFor = (i) => {
-        if (opts.xlabels && opts.xlabels[i]) return opts.xlabels[i];
-        const d = new Date(data[i].t * 1000);
-        if (opts.daily) return d.toLocaleDateString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric' });
-        return d.toLocaleTimeString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
-      };
-      if (opts.xlabels) {
-        if (data.length > 5 && W < 480) {
-          [0, Math.floor((data.length - 1) / 2), data.length - 1].forEach(i => ctx.fillText(lblFor(i), xAt(i), H - 10));
-        } else {
-          data.forEach((_, i) => ctx.fillText(lblFor(i), xAt(i), H - 10));
-        }
-      } else {
-        const idxs = [0, Math.floor((data.length - 1) / 2), data.length - 1];
-        const shown = new Set();
-        idxs.forEach(i => {
-          if (shown.has(i) || i >= data.length) return;
-          shown.add(i);
-          ctx.fillText(lblFor(i), xAt(i), H - 10);
-        });
-      }
-    }
-
-    // tooltip
-    const onMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const i = Math.round((x - P) / stepX);
-      if (i < 0 || i >= data.length) { tip.style.display = 'none'; return; }
-      const h = data[i];
-      const d = new Date(h.t * 1000);
-      const label = opts.daily
-        ? d.toLocaleDateString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { weekday: 'long', day: 'numeric' })
-        : d.toLocaleTimeString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
-      tip.innerHTML =
-        `<b>${label}</b><br>` +
-        `<span style="color:${colUp}">▲ ${I18N.t('chart_upload')}: ${fmtBytes(h.up || 0)}</span><br>` +
-        `<span style="color:${colDown}">▼ ${I18N.t('chart_download')}: ${fmtBytes(h.down || 0)}</span>`;
-      tip.style.display = 'block';
-      const tx = clamp(xAt(i) + 12, 0, W - 170);
-      const ty = clamp(e.clientY - rect.top - 40, 0, H - 90);
-      tip.style.left = tx + 'px';
-      tip.style.top = ty + 'px';
+      return d.toLocaleTimeString(I18N.lang === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
     };
-    canvas.onmousemove = onMove;
-    canvas.onmouseleave = () => { tip.style.display = 'none'; };
+    const labels = sampleIndices(n, 7).map(makeLabel);
+
+    wrap.innerHTML = `
+      <svg class="chart-svg" viewBox="0 0 600 250" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#8e20d7" stop-opacity=".62"/>
+            <stop offset="100%" stop-color="#461170" stop-opacity=".04"/>
+          </linearGradient>
+          <linearGradient id="chartStroke" x1="0" x2="1">
+            <stop offset="0%" stop-color="#9c38ed"/>
+            <stop offset="50%" stop-color="#cc72ff"/>
+            <stop offset="100%" stop-color="#a545f2"/>
+          </linearGradient>
+          <linearGradient id="chartStrokeDown" x1="0" x2="1">
+            <stop offset="0%" stop-color="#ad75ff"/>
+            <stop offset="100%" stop-color="#c59dff"/>
+          </linearGradient>
+          <filter id="chartGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        ${grid}
+        <path d="${downPath}" fill="none" stroke="url(#chartStrokeDown)" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="${upArea}" fill="url(#chartFill)"/>
+        <path d="${upPath}" fill="none" stroke="url(#chartStroke)" stroke-width="2" stroke-linejoin="round" filter="url(#chartGlow)"/>
+        ${dots}
+      </svg>
+      <div class="chart-labels">${labels.map(l => `<span>${esc(l)}</span>`).join('')}</div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot upload"></span>${I18N.t('chart_upload')}</div>
+        <div class="legend-item"><span class="legend-dot download"></span>${I18N.t('chart_download')}</div>
+      </div>`;
   }
 
   // ---------------- router & shell ----------------
@@ -349,6 +282,18 @@ window.UI = (() => {
     tools: { title: 'nav_tools' },
   };
 
+  const MENU = [
+    ['dashboard', '⌂'],
+    ['users', '♙'],
+    ['configs', '⌘'],
+    ['nodes', '▣'],
+    ['subscriptions', '▤'],
+    ['reports', '▧'],
+    ['settings', '⚙'],
+    ['admins', '♙'],
+    ['tools', '⌕'],
+  ];
+
   let currentRoute = 'dashboard';
   let pages = {}; // populated by pages.js
 
@@ -360,39 +305,31 @@ window.UI = (() => {
   function renderSidebar() {
     const nav = $('#sidebarNav');
     if (!nav) return;
-    const order = ['dashboard', 'users', 'configs', 'nodes', 'subscriptions', 'reports', 'settings', 'admins', 'tools'];
-    const item = (r) => `
+    nav.innerHTML = MENU.map(([r, g]) => `
       <a class="menu-item ${currentRoute === r ? 'active' : ''}" href="#/${r}" data-route="${r}">
-        <div class="menu-icon">${ICONS[r]}</div>
-        <span class="menu-title" data-i18n="nav_${r}"></span>
-        ${r !== 'dashboard' ? '<span class="menu-arrow">⌄</span>' : ''}
-      </a>`;
-    nav.innerHTML = order.map(item).join('');
-    // logout item
+        <span class="menu-icon">${g}</span>
+        <span class="menu-text" data-i18n="nav_${r}"></span>
+        ${r !== 'dashboard' ? '<span class="arrow">⌄</span>' : ''}
+      </a>`).join('');
     const foot = $('#sidebarFoot');
-    foot.innerHTML = `
-      <button class="logout-btn" id="logoutLink">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17L15 12L10 7"/><path d="M15 12H3"/><path d="M13 3H19A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H13"/></svg>
-        <span data-i18n="logout"></span>
-      </button>`;
-    $('#logoutLink').addEventListener('click', async (e) => {
-      e.preventDefault();
-      try { await apiJson('/api/logout', { method: 'POST' }); } catch (_) { /* noop */ }
-      location.href = '/login';
-    });
-  }
-
-  function renderTopbar(me) {
-    const search = $('#globalSearch');
-    search.setAttribute('placeholder', I18N.t('search_placeholder'));
-    $('#adminName').textContent = me.username || I18N.t('admin');
-    $('#adminRole').textContent = I18N.t('role_super');
-    const initial = (me.username || 'A').charAt(0).toUpperCase();
-    $('#adminAvatar').textContent = initial;
+    if (foot) {
+      foot.innerHTML = `
+        <button class="logout" id="logoutLink">
+          <span class="logout-text" data-i18n="logout"></span>
+          <span class="logout-arrow">⇥</span>
+        </button>`;
+      $('#logoutLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        try { await apiJson('/api/logout', { method: 'POST' }); } catch (_) { /* noop */ }
+        location.href = '/login';
+      });
+    }
   }
 
   async function render() {
     route();
+    const app = document.querySelector('.app');
+    if (app) app.classList.toggle('on-dashboard', currentRoute === 'dashboard');
     renderSidebar();
     const page = pages[currentRoute];
     const view = $('#view');
@@ -407,15 +344,6 @@ window.UI = (() => {
   }
 
   function boot() {
-    // shell is in dashboard.html already; wire events
-    $('#menuBtn').addEventListener('click', () => document.querySelector('.app-shell').classList.toggle('nav-open'));
-    $('#collapseBtn').addEventListener('click', () => {
-      if (window.innerWidth > 960) document.querySelector('.app-shell').classList.toggle('collapsed');
-    });
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('#scrim')) document.querySelector('.app-shell').classList.remove('nav-open');
-    });
-
     // global search → routes to users page with query
     const search = $('#globalSearch');
     search.addEventListener('keydown', (e) => {
@@ -434,31 +362,19 @@ window.UI = (() => {
       }
     });
 
-    // bell → admins audit log
+    // header icons
     $('#bellBtn').addEventListener('click', () => { location.hash = '#/admins'; });
     $('#statusBtn').addEventListener('click', () => { location.hash = '#/tools'; });
 
     window.addEventListener('hashchange', render);
-    // resize closes mobile nav + redraws charts
+    // redraw charts on resize
     window.addEventListener('resize', debounce(() => {
-      if (window.innerWidth > 960) document.querySelector('.app-shell').classList.remove('nav-open');
       $$('.chart-wrap').forEach((w) => {
         if (w._chartData) drawChart(w, w._chartData, w._chartOpts);
       });
     }, 180));
 
     render();
-    // poll header stats (badge) every 30s
-    setInterval(async () => {
-      try {
-        const s = await apiJson('/api/stats');
-        const badge = $('#bellDot');
-        if (badge) {
-          badge.textContent = s.events_today || 0;
-          badge.style.display = (s.events_today || 0) > 0 ? 'flex' : 'none';
-        }
-      } catch (_) { /* noop */ }
-    }, 30000);
   }
 
   function setPages(p) { pages = p; }
