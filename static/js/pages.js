@@ -116,62 +116,59 @@
   // ================================================================ dashboard
   async function dashboard(view) {
     view.innerHTML = `
-      <div class="page-head">
-        <div>
-          <h1 class="page-title" data-i18n="welcome_title"></h1>
-          <p class="page-sub" data-i18n="welcome_sub"></p>
+      <section class="dashboard">
+        <div class="stats-grid" id="statGrid">
+          ${['gold', 'green', 'blue', 'purple'].map(() => `<div class="stat-card">${U.skeleton(2)}</div>`).join('')}
         </div>
-      </div>
-      <section class="stats-grid" id="statGrid">
-        ${['orange', 'cyan', 'blue', 'purple'].map(() => `<div class="stat-card">${U.skeleton(2)}</div>`).join('')}
-      </section>
-      <section class="dashboard-grid">
-        <div class="panel server-panel">
-          <div class="panel-head">
-            <div class="panel-tools"><button class="tool-btn" id="refreshBtn" title="refresh">${ICONS.refresh}</button></div>
-            <div class="panel-title" data-i18n="server_status"></div>
-          </div>
-          <div class="server-list" id="nodeList">${U.skeleton(5)}</div>
-          <div class="server-footer"><a href="#/nodes" data-i18n="view_all_servers"></a></div>
-        </div>
-        <div class="panel chart-panel">
-          <div class="panel-head">
-            <div>
-              <div class="panel-title" data-i18n="chart_traffic"></div>
-              <div class="panel-sub" data-i18n="chart_sub_7d"></div>
+
+        <div class="middle-grid">
+          <div class="panel chart-panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title" data-i18n="chart_traffic"></div>
+                <div class="panel-subtitle" data-i18n="chart_sub_7d"></div>
+              </div>
             </div>
-          </div>
-          <div class="panel-body">
             <div class="chart-wrap" id="trafficChart">${U.skeleton(6)}</div>
-            <div class="chart-legend">
-              <span class="lg"><span class="sw legend-upload"></span><span data-i18n="chart_upload"></span></span>
-              <span class="lg"><span class="sw legend-download"></span><span data-i18n="chart_download"></span></span>
+          </div>
+
+          <div class="panel servers-panel">
+            <div class="panel-header">
+              <div class="panel-title" data-i18n="server_status"></div>
+              <div class="panel-tools">
+                <button class="tool-btn" id="serversRefresh" aria-label="refresh">↻</button>
+                <button class="tool-btn" id="serversToggle" aria-label="collapse">×</button>
+              </div>
             </div>
+            <div class="server-list" id="nodeList">${U.skeleton(5)}</div>
+            <a href="#/nodes" class="view-all" data-i18n="view_all_servers"></a>
           </div>
         </div>
-      </section>
-      <section class="bottom-grid">
-        <div class="panel table-panel">
-          <div class="panel-head">
-            <a href="#/configs" class="panel-action" data-i18n="view_all"></a>
-            <div class="panel-title" data-i18n="latest_configs"></div>
+
+        <div class="bottom-grid">
+          <div class="panel bottom-panel">
+            <div class="table-header">
+              <div class="table-title" data-i18n="recent_users"></div>
+              <a href="#/users" class="table-link" data-i18n="view_all"></a>
+            </div>
+            <div class="users-table" id="recentUsers">${U.skeleton(3)}</div>
           </div>
-          <div class="panel-table" id="latestConfigs">${U.skeleton(4)}</div>
-        </div>
-        <div class="panel table-panel">
-          <div class="panel-head">
-            <a href="#/users" class="panel-action" data-i18n="view_all"></a>
-            <div class="panel-title" data-i18n="recent_users"></div>
+
+          <div class="panel bottom-panel">
+            <div class="table-header">
+              <div class="table-title" data-i18n="latest_configs"></div>
+              <a href="#/configs" class="table-link" data-i18n="view_all"></a>
+            </div>
+            <div class="config-table" id="latestConfigs">${U.skeleton(3)}</div>
           </div>
-          <div class="panel-table" id="recentUsers">${U.skeleton(4)}</div>
         </div>
       </section>`;
     I18N.apply();
 
-    const refStatus = (u) => {
+    const badgeOf = (u) => {
       const st = U.userStatusLabel(u);
-      const cls = st.cls === 'ok' ? 'online' : 'offline';
-      return `<span class="status ${cls}"><span class="status-dot"></span>${esc(st.text)}</span>`;
+      const cls = st.cls === 'ok' ? 'active' : (st.cls === 'warn' ? 'expired' : 'inactive');
+      return `<span class="badge ${cls}">${esc(st.text)}</span>`;
     };
 
     async function load() {
@@ -182,23 +179,28 @@
         U.apiJson('/api/users'),
       ]);
 
-      // stat cards (reference order/colors)
-      const online = (nodesRes.nodes || []).filter(n => n.status && n.status.online).length;
+      const nodes = nodesRes.nodes || [];
+      const users = usersRes.users || [];
+      const online = nodes.filter(n => n.enabled && n.status && n.status.online).length;
       const totalTraffic = (stats.total_up || 0) + (stats.total_down || 0);
+      const nowSec = Date.now() / 1000;
+      const activeUsers = users.filter(u =>
+        (u.last_seen && (nowSec - u.last_seen) < 86400) ||
+        ((u.status || {}).active_connections || 0) > 0).length;
+
+      // stat cards — v2 order & variants: gold, green, blue, purple
       const cards = [
-        { color: 'orange', icon: 'statConfigs', label: 'stat_configs', value: stats.enabled_count, dot: false, sub: I18N.t('stat_configs_sub', { n: stats.users_count }) },
-        { color: 'cyan', icon: 'server', label: 'stat_servers', value: stats.nodes_count, dot: true, sub: I18N.t('stat_servers_sub', { n: online }) },
-        { color: 'blue', icon: 'statTraffic', label: 'stat_traffic', value: U.fmtBytes(totalTraffic), dot: false, sub: I18N.t('stat_traffic_sub', { up: U.fmtBytes(stats.total_up), down: U.fmtBytes(stats.total_down) }) },
-        { color: 'purple', icon: 'users', label: 'stat_active_users', value: stats.enabled_count, dot: false, sub: I18N.t('stat_users_sub', { n: stats.users_count }) },
+        { color: 'gold', icon: '▣', label: 'stat_configs', value: stats.enabled_count, change: I18N.t('stat_configs_sub', { n: stats.users_count }) },
+        { color: 'green', icon: '▤', label: 'stat_servers', value: stats.nodes_count, change: `<strong>● ${online} ${I18N.t('online')}</strong>` },
+        { color: 'blue', icon: '↔', label: 'stat_traffic', value: U.fmtBytes(totalTraffic), change: I18N.t('stat_traffic_sub', { up: U.fmtBytes(stats.total_up), down: U.fmtBytes(stats.total_down) }) },
+        { color: 'purple', icon: '♙', label: 'stat_active_users', value: activeUsers, change: I18N.t('stat_users_sub', { n: stats.users_count }) },
       ];
       $('#statGrid').innerHTML = cards.map(c => `
         <div class="stat-card ${c.color}">
-          <div class="stat-top">
-            <div class="stat-icon">${ICONS[c.icon]}</div>
-            <div class="stat-label" data-i18n="${c.label}"></div>
-          </div>
+          <div class="stat-title" data-i18n="${c.label}"></div>
           <div class="stat-value">${esc(String(c.value))}</div>
-          <div class="stat-footer ${c.dot ? 'green' : ''}">${c.dot ? '● ' : ''}<span>${esc(c.sub)}</span></div>
+          <div class="stat-change">${c.change}</div>
+          <div class="stat-icon">${c.icon}</div>
         </div>`).join('');
 
       // traffic chart (7 days, Persian day labels)
@@ -213,56 +215,46 @@
         $('#trafficChart').innerHTML = U.empty('📊', I18N.t('empty_traffic'), '');
       }
 
-      // server status list
-      const nodes = nodesRes.nodes || [];
-      $('#nodeList').innerHTML = nodes.length ? nodes.map(n => {
+      // server status list (real nodes)
+      $('#nodeList').innerHTML = nodes.length ? nodes.slice(0, 5).map(n => {
         const st = n.status || {};
-        const online = n.enabled && st.online;
+        const isOn = n.enabled && st.online;
+        const city = (n.city && n.city !== '—') ? n.city : (n.name || '—');
         return `
           <div class="server-row">
-            <div class="server-location">
-              <span class="flag">${esc(n.flag || '🏳️')}</span>
-              <span class="city">${esc(n.city && n.city !== '—' ? n.city : n.name)}</span>
-            </div>
+            <div class="server-name"><span class="flag">${esc(n.flag || '🏳️')}</span>${esc(city)}</div>
             <div class="country-code">${esc((n.country_code || '').toUpperCase()) || '—'}</div>
-            <div class="server-status-wrap">
-              <span class="status ${online ? 'online' : 'offline'}"><span class="status-dot"></span>${online ? I18N.t('online') : I18N.t('offline')}</span>
-            </div>
-            <div class="latency">${st.latency_ms != null ? st.latency_ms + I18N.t('ms') : '—'}</div>
+            <div class="server-status ${isOn ? '' : 'offline'}"><span>${isOn ? I18N.t('online') : I18N.t('offline')}</span></div>
+            <div class="ping">${isOn && st.latency_ms != null ? st.latency_ms + 'ms' : '-'}</div>
           </div>`;
       }).join('') : U.empty('🖥️', I18N.t('no_nodes'), '');
 
-      // recent users
-      const users = usersRes.users || [];
-      const recent = [...users].sort((a, b) => (b.created_at || 0) - (a.created_at || 0)).slice(0, 5);
-      $('#recentUsers').innerHTML = recent.length ? `
-        <table class="data">
-          <thead><tr><th data-i18n="status"></th><th data-i18n="traffic_used"></th><th data-i18n="user"></th></tr></thead>
-          <tbody>${recent.map(u => `
-            <tr>
-              <td>${refStatus(u)}</td>
-              <td class="traffic-value">${U.fmtBytes((u.status || {}).used || 0)}</td>
-              <td><div class="user-cell"><span class="username">${esc(u.name)}</span><span class="user-avatar">${esc((u.name || '?').charAt(0).toUpperCase())}</span></div></td>
-            </tr>`).join('')}</tbody>
-        </table>` : U.empty('👤', I18N.t('no_users'), '');
+      // recent users (real, newest first)
+      const headUsers = `<div class="user-table-head"><div data-i18n="user"></div><div data-i18n="traffic_used"></div><div data-i18n="status"></div></div>`;
+      const recent = [...users].sort((a, b) => (b.created_at || 0) - (a.created_at || 0)).slice(0, 3);
+      $('#recentUsers').innerHTML = recent.length ? headUsers + recent.map(u => `
+        <div class="user-row">
+          <div class="user-cell"><div class="user-info"><div class="user-avatar"></div>${esc(u.name)}</div></div>
+          <div class="user-cell traffic">${U.fmtBytes((u.status || {}).used || 0)}</div>
+          <div class="user-cell">${badgeOf(u)}</div>
+        </div>`).join('') : U.empty('👤', I18N.t('no_users'), '');
 
-      // latest configs
+      // latest configs (real, newest first)
       const nodeMap = {};
       nodes.forEach(n => { nodeMap[n.id] = n; });
-      const latest = [...users].sort((a, b) => (b.created_at || 0) - (a.created_at || 0)).slice(0, 5);
-      $('#latestConfigs').innerHTML = latest.length ? `
-        <table class="data">
-          <thead><tr><th data-i18n="status"></th><th data-i18n="node"></th><th data-i18n="protocol"></th><th data-i18n="name"></th></tr></thead>
-          <tbody>${latest.map(u => {
-            const n = nodeMap[u.node_id || 1];
-            return `<tr>
-              <td>${refStatus(u)}</td>
-              <td>${esc(n ? (n.city && n.city !== '—' ? n.city : n.name) : '—')}</td>
-              <td class="protocol">${esc((u.protocol || '').toUpperCase())}</td>
-              <td class="config-name">${esc(u.name)}</td>
-            </tr>`;
-          }).join('')}</tbody>
-        </table>` : U.empty('⚙️', I18N.t('no_configs'), '');
+      const headCfgs = `<div class="config-head"><div data-i18n="name"></div><div data-i18n="type"></div><div data-i18n="node"></div><div data-i18n="status"></div></div>`;
+      const latest = [...users].sort((a, b) => (b.created_at || 0) - (a.created_at || 0)).slice(0, 3);
+      $('#latestConfigs').innerHTML = latest.length ? headCfgs + latest.map(u => {
+        const n = nodeMap[u.node_id || 1];
+        return `
+        <div class="config-row">
+          <div class="config-cell config-name">${esc(u.name)}</div>
+          <div class="config-cell">${esc((u.protocol || '').toUpperCase())}</div>
+          <div class="config-cell">${esc(n ? ((n.city && n.city !== '—') ? n.city : n.name) : '—')}</div>
+          <div class="config-cell config-status">${badgeOf(u)}</div>
+        </div>`;
+      }).join('') : U.empty('⚙️', I18N.t('no_configs'), '');
+
       I18N.apply();
     }
 
@@ -273,11 +265,14 @@
       return;
     }
 
-    $('#refreshBtn').addEventListener('click', async () => {
-      const b = $('#refreshBtn');
+    $('#serversRefresh').addEventListener('click', async () => {
+      const b = $('#serversRefresh');
       b.classList.add('spin');
       try { await load(); } catch (_) { /* noop */ }
       setTimeout(() => b.classList.remove('spin'), 550);
+    });
+    $('#serversToggle').addEventListener('click', () => {
+      document.querySelector('.servers-panel').classList.toggle('collapsed');
     });
   }
 
@@ -804,10 +799,6 @@
         <div class="panel">
           <div class="panel-head">
             <div><div class="panel-title" data-i18n="chart_traffic"></div><div class="panel-sub" id="repChartSub"></div></div>
-            <div class="chart-legend">
-              <span class="lg"><span class="sw legend-upload"></span><span data-i18n="chart_upload"></span></span>
-              <span class="lg"><span class="sw legend-download"></span><span data-i18n="chart_download"></span></span>
-            </div>
           </div>
           <div class="panel-body"><div class="chart-wrap" id="repChart">${U.skeleton(6)}</div></div>
         </div>
